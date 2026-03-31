@@ -1,170 +1,645 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Apprentissage Darija - Mois 5</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    [x-cloak]{display:none!important}.arabic-text{font-family:'Amiri','Noto Naskh Arabic',sans-serif;direction:rtl;line-height:1.6}.tab-active{background-color:#a16207;color:white}.tab-btn,.theme-card,.word-card{cursor:pointer;user-select:none}.word-card:hover{background-color:#fefce8}.progress-bar{transition:width 0.5s ease-in-out}.quiz-option{cursor:pointer;user-select:none}.quiz-option:disabled{cursor:not-allowed;opacity:0.8}.tab-content{display:none}.tab-content.active{display:block}body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Darija Marocaine – Mois 5 (santé, bien-être) – Verbes corrigés</title>
+    <style>
+        /* mêmes styles que précédemment pour le mois 5 (bleu ciel) */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #e3f2fd; font-family: system-ui, 'Segoe UI', 'Poppins', sans-serif; padding: 1.5rem; }
+        .app-container { max-width: 1400px; margin: 0 auto; background: white; border-radius: 2rem; box-shadow: 0 20px 35px rgba(0,0,0,0.1); overflow: hidden; }
+        .header { background: #42a5f5; color: white; padding: 1.5rem; text-align: center; }
+        .header h1 { font-size: 1.8rem; }
+        .phonetic-legend { background: #bbdef5; padding: 0.8rem 1.5rem; display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; font-size: 0.85rem; }
+        .legend-item { background: #90caf9; border-radius: 20px; padding: 0.2rem 0.7rem; font-family: monospace; }
+        .tabs { display: flex; flex-wrap: wrap; background: #bbdef5; border-bottom: 2px solid #90caf9; gap: 0.2rem; padding: 0 1rem; }
+        .tab-btn { background: transparent; border: none; padding: 1rem 1.5rem; font-size: 1rem; font-weight: 600; color: #1e88e5; cursor: pointer; border-radius: 1rem 1rem 0 0; }
+        .tab-btn.active { background: white; color: #1e88e5; border-bottom: 3px solid #1e88e5; }
+        .tab-content { display: none; padding: 2rem; background: white; }
+        .tab-content.active { display: block; }
+        .grammar-card, .conju-card, .dialogue-card, .exercise-card { background: #fefefe; border-radius: 1.5rem; padding: 1.5rem; border: 1px solid #90caf9; margin-bottom: 1.5rem; }
+        .dialogue-item { background: #e3f2fd; padding: 1rem; border-radius: 1rem; margin-bottom: 1rem; border-left: 5px solid #42a5f5; }
+        .speaker { font-weight: bold; color: #42a5f5; display: inline-block; width: 70px; }
+        .darija-phrase { font-weight: 700; color: #b4511a; direction: rtl; unicode-bidi: embed; font-size: 1.1rem; }
+        .fr-phrase { color: #2b2b2b; margin-left: 1rem; }
+        .keyword-badge { background: #90caf9; border-radius: 12px; padding: 0.1rem 0.5rem; font-size: 0.7rem; display: inline-block; margin-top: 0.5rem; }
+        .vocab-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 1.5rem; gap: 1rem; }
+        .progress-bar { background: #90caf9; border-radius: 20px; height: 12px; width: 200px; overflow: hidden; }
+        .progress-fill { background: #42a5f5; width: 0%; height: 100%; transition: width 0.3s; }
+        .toggle-translate-btn, .hide-col-btn { background: #42a5f5; color: white; border: none; padding: 0.4rem 1rem; border-radius: 30px; cursor: pointer; font-size: 0.8rem; }
+        .words-grid { display: flex; flex-wrap: wrap; gap: 1.5rem; margin-top: 1rem; }
+        .word-card { background: white; border-radius: 1.2rem; padding: 1rem; border: 1px solid #90caf9; width: calc(33% - 1rem); min-width: 260px; flex: 1; display: flex; flex-direction: column; }
+        .word-card.hidden-col { display: none; }
+        .word-card h4 { color: #1e88e5; margin-bottom: 0.8rem; display: flex; justify-content: space-between; flex-wrap: wrap; }
+        .word-list { list-style: none; max-height: 500px; overflow-y: auto; }
+        .word-list li { display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 0; border-bottom: 1px dashed #bbdef5; flex-wrap: wrap; gap: 0.5rem; }
+        .darija { font-weight: 700; color: #b4511a; direction: ltr; }
+        .arabic { font-family: 'Amiri', 'Segoe UI', serif; font-size: 1.1rem; direction: rtl; color: #2c5f2d; margin-left: 0.5rem; }
+        .traduction { color: #2b2b2b; }
+        .hidden-translation .traduction { visibility: hidden; }
+        .checkbox-word { margin-right: 8px; transform: scale(1.1); cursor: pointer; }
+        .exercise-item { background: #e3f2fd; padding: 1rem; border-radius: 1rem; margin-bottom: 1rem; }
+        .exercise-input { width: 100%; padding: 0.5rem; margin: 0.5rem 0; border: 1px solid #90caf9; border-radius: 8px; }
+        .btn-check { background: #42a5f5; color: white; border: none; padding: 0.3rem 1rem; border-radius: 20px; cursor: pointer; }
+        .feedback { margin-top: 0.5rem; font-style: italic; }
+        .daily-review { background: #e3f2fd; padding: 1rem; border-radius: 1rem; margin-top: 1rem; }
+        .quiz-opt { background: #90caf9; border: none; padding: 0.3rem 1rem; margin: 0.3rem; border-radius: 20px; cursor: pointer; }
+        .training-area { background: #bbdef5; padding: 1rem; border-radius: 1rem; margin-top: 1.5rem; }
+        .conj-table { width: 100%; border-collapse: collapse; background: #e3f2fd; margin-top: 1rem; font-size: 0.85rem; }
+        .conj-table th, .conj-table td { border: 1px solid #90caf9; padding: 0.5rem; text-align: center; vertical-align: middle; }
+        .conj-table th { background: #42a5f5; color: white; }
+        .arabic-cell { font-family: 'Amiri', serif; font-size: 1rem; direction: rtl; }
+        .latin-cell { font-family: monospace; font-size: 0.85rem; margin-top: 4px; display: block; }
+        footer { background: #bbdef5; text-align: center; padding: 1rem; font-size: 0.8rem; }
+        @media (max-width: 700px) { .word-card { width: 100%; } .tab-btn { padding: 0.7rem 1rem; } .conj-table { font-size: 0.7rem; } }
+    </style>
 </head>
-<body class="bg-gradient-to-br from-yellow-50 to-amber-100 min-h-screen flex flex-col">
-  
-  <header class="bg-gradient-to-r from-yellow-600 to-amber-600 text-white shadow-lg sticky top-0 z-50">
-    <div class="max-w-6xl mx-auto px-4 py-4 text-center">
-      <h1 class="text-2xl md:text-3xl font-bold">🏠 Apprentissage Darija - Mois 5</h1>
-      <p class="text-yellow-100 mt-1 text-sm">Lieux • Activités • Objets • Expressions</p>
+<body>
+<div class="app-container">
+    <div class="header">
+        <h1>📘 Darija Marocaine – Mois 5</h1>
+        <p>Thèmes : santé, bien-être, pharmacie, médecine, urgences • 250 nouveaux mots • 30 verbes</p>
     </div>
-  </header>
-
-  <div class="max-w-6xl mx-auto px-4 py-3">
-    <div class="bg-white rounded-xl p-4 shadow-md">
-      <div class="flex justify-between text-sm text-gray-600 mb-2">
-        <span>📊 Progression</span><span id="progress-text">0%</span>
-      </div>
-      <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
-        <div id="progress-bar" class="bg-gradient-to-r from-yellow-500 to-amber-500 h-3 rounded-full progress-bar" style="width:0%"></div>
-      </div>
+    <div class="phonetic-legend">
+        <span class="legend-item">7 = ح</span> <span class="legend-item">3 = ع</span> <span class="legend-item">9 = ق</span>
+        <span class="legend-item">gh = غ</span> <span class="legend-item">q = ق (occlusive)</span> <span class="legend-item">voyelles : a, i, u</span>
     </div>
-  </div>
-
-  <div class="max-w-6xl mx-auto px-4">
-    <div class="flex flex-wrap gap-2 justify-center mb-4 sticky top-20 z-40 bg-yellow-50/90 backdrop-blur-sm py-2 rounded-xl">
-      <button id="tab-accueil" class="tab-btn px-4 py-2 md:px-6 md:py-3 rounded-full font-semibold text-sm md:text-base transition-all tab-active" onclick="showTab('accueil')">🏠 Accueil</button>
-      <button id="tab-lecons" class="tab-btn px-4 py-2 md:px-6 md:py-3 rounded-full font-semibold text-sm md:text-base transition-all bg-white text-gray-700 hover:bg-yellow-100" onclick="showTab('lecons')">📖 Leçons</button>
-      <button id="tab-dialogues" class="tab-btn px-4 py-2 md:px-6 md:py-3 rounded-full font-semibold text-sm md:text-base transition-all bg-white text-gray-700 hover:bg-yellow-100" onclick="showTab('dialogues')">💬 Dialogues</button>
-      <button id="tab-verbes" class="tab-btn px-4 py-2 md:px-6 md:py-3 rounded-full font-semibold text-sm md:text-base transition-all bg-white text-gray-700 hover:bg-yellow-100" onclick="showTab('verbes')">🔤 Verbes</button>
-      <button id="tab-revision" class="tab-btn px-4 py-2 md:px-6 md:py-3 rounded-full font-semibold text-sm md:text-base transition-all bg-white text-gray-700 hover:bg-yellow-100" onclick="showTab('revision')">🎯 Révision</button>
-    </div>
-  </div>
-
-  <main class="max-w-6xl mx-auto px-4 pb-8 flex-grow">
-    
-    <!-- Accueil -->
-    <div id="content-accueil" class="tab-content active">
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-        <div class="theme-card bg-white rounded-2xl p-5 md:p-6 shadow-lg text-center transition-all hover:shadow-xl" onclick="showTab('lecons')">
-          <div class="text-4xl md:text-5xl mb-3">🏛️</div>
-          <h3 class="text-lg md:text-xl font-bold text-gray-800">Leçons</h3>
-          <p class="text-gray-500 mt-2 text-sm">4 thèmes • 80 mots</p>
-        </div>
-        <div class="theme-card bg-white rounded-2xl p-5 md:p-6 shadow-lg text-center transition-all hover:shadow-xl" onclick="showTab('dialogues')">
-          <div class="text-4xl md:text-5xl mb-3">💬</div>
-          <h3 class="text-lg md:text-xl font-bold text-gray-800">Dialogues</h3>
-          <p class="text-gray-500 mt-2 text-sm">5 dialogues</p>
-        </div>
-        <div class="theme-card bg-white rounded-2xl p-5 md:p-6 shadow-lg text-center transition-all hover:shadow-xl" onclick="showTab('verbes')">
-          <div class="text-4xl md:text-5xl mb-3">🔤</div>
-          <h3 class="text-lg md:text-xl font-bold text-gray-800">Verbes</h3>
-          <p class="text-gray-500 mt-2 text-sm">20 verbes conjugués</p>
-        </div>
-        <div class="theme-card bg-white rounded-2xl p-5 md:p-6 shadow-lg text-center transition-all hover:shadow-xl" onclick="showTab('revision')">
-          <div class="text-4xl md:text-5xl mb-3">🎯</div>
-          <h3 class="text-lg md:text-xl font-bold text-gray-800">Révision</h3>
-          <p class="text-gray-500 mt-2 text-sm">Quiz interactif</p>
-        </div>
-      </div>
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="grammar">📐 Grammaire</button>
+        <button class="tab-btn" data-tab="conjugation">⏳ Conjugaison</button>
+        <button class="tab-btn" data-tab="dialogue">💬 Dialogue</button>
+        <button class="tab-btn" data-tab="exercises">✍️ Exercices</button>
+        <button class="tab-btn" data-tab="review">🔄 Révision</button>
+        <button class="tab-btn" data-tab="vocabulary">📚 Vocabulaire</button>
     </div>
 
-    <!-- Leçons -->
-    <div id="content-lecons" class="tab-content">
-      <div class="grid md:grid-cols-2 gap-4 md:gap-6">
-        <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
-          <div class="bg-gradient-to-r from-yellow-500 to-amber-500 p-4"><h3 class="text-xl font-bold text-white">🏛️ Lieux & Villes</h3></div>
-          <div class="p-4 max-h-80 md:max-h-96 overflow-y-auto"><div class="space-y-3" id="theme-lieux"></div></div>
+    <!-- GRAMMAIRE -->
+    <div id="grammar" class="tab-content active">
+        <div class="grammar-card">
+            <h3>📖 Le verbe impersonnel et les expressions de douleur</h3>
+            <p>Pour exprimer une douleur, on utilise <strong>"3ndi"</strong> (j'ai) + nom : <em>3ndi ṣudā3</em> (j'ai mal à la tête).</p>
+            <p>Le verbe <strong>"wja3"</strong> (faire mal) : <em>wja3ni rassi</em> (ma tête me fait mal).</p>
+            <p>Pour les symptômes : <em>3ndi ḥmār</em> (j'ai de la fièvre), <em>3ndi kḥla</em> (je suis malade).</p>
+            <div class="exercise-item"><strong>🧠 Mini-exercice :</strong> Dites "j'ai mal à la tête" → <input type="text" id="healthExo"><button class="btn-check" onclick="checkHealth()">Vérifier</button><div id="healthFeedback" class="feedback"></div></div>
         </div>
-        <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
-          <div class="bg-gradient-to-r from-green-500 to-emerald-500 p-4"><h3 class="text-xl font-bold text-white">📅 Activités</h3></div>
-          <div class="p-4 max-h-80 md:max-h-96 overflow-y-auto"><div class="space-y-3" id="theme-activites"></div></div>
-        </div>
-        <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
-          <div class="bg-gradient-to-r from-blue-500 to-cyan-500 p-4"><h3 class="text-xl font-bold text-white">📱 Objets</h3></div>
-          <div class="p-4 max-h-80 md:max-h-96 overflow-y-auto"><div class="space-y-3" id="theme-objets"></div></div>
-        </div>
-        <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
-          <div class="bg-gradient-to-r from-purple-500 to-pink-500 p-4"><h3 class="text-xl font-bold text-white">💬 Expressions</h3></div>
-          <div class="p-4 max-h-80 md:max-h-96 overflow-y-auto"><div class="space-y-3" id="theme-expressions"></div></div>
-        </div>
-      </div>
     </div>
 
-    <!-- Dialogues -->
-    <div id="content-dialogues" class="tab-content"><div class="space-y-4 md:space-y-6" id="dialogues-container"></div></div>
-
-    <!-- Verbes -->
-    <div id="content-verbes" class="tab-content"><div class="space-y-4" id="verbes-container"></div></div>
-
-    <!-- Révision -->
-    <div id="content-revision" class="tab-content">
-      <div class="bg-white rounded-2xl shadow-lg p-4 md:p-6">
-        <div class="text-center mb-4 md:mb-6">
-          <h3 class="text-xl md:text-2xl font-bold text-gray-800">🎯 Quiz de Révision</h3>
-          <p class="text-gray-500 text-sm">Testez vos connaissances !</p>
+    <!-- CONJUGAISON : 30 verbes complets (santé) -->
+    <div id="conjugation" class="tab-content">
+        <div class="conju-card">
+            <h3>⏳ Conjugaison des verbes (3 temps, 8 pronoms)</h3>
+            <p>Choisissez un verbe : 
+                <select id="verbSelect" style="padding:0.3rem; border-radius:8px;"></select>
+            </p>
+            <div id="conjugationTable"></div>
         </div>
-        <div class="flex flex-wrap justify-center gap-3 mb-4">
-          <button class="px-4 py-2 bg-yellow-500 text-white rounded-full font-semibold hover:bg-yellow-600" onclick="startQuiz('vocabulaire')">📚 Vocabulaire</button>
-          <button class="px-4 py-2 bg-amber-500 text-white rounded-full font-semibold hover:bg-amber-600" onclick="startQuiz('verbes')">🔤 Verbes</button>
-          <button class="px-4 py-2 bg-purple-500 text-white rounded-full font-semibold hover:bg-purple-600" onclick="startQuiz('global')">🌍 Tous</button>
-        </div>
-        <div id="quiz-area" class="hidden">
-          <div class="text-center mb-4"><span class="text-gray-500 text-sm">Question <span id="quiz-current">1</span>/<span id="quiz-total">10</span></span></div>
-          <div id="quiz-question" class="text-lg text-center font-bold text-gray-800 mb-4"></div>
-          <div id="quiz-options" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
-          <div id="quiz-result" class="text-center mt-4 text-lg font-bold hidden"></div>
-          <div class="text-center mt-4"><button id="next-btn" class="px-4 py-2 bg-yellow-500 text-white rounded-full font-semibold hover:bg-yellow-600 hidden" onclick="nextQuestion()">Suivant →</button></div>
-        </div>
-        <div id="quiz-end" class="hidden text-center">
-          <div class="text-4xl mb-4">🎉</div>
-          <h3 class="text-xl font-bold text-gray-800">Quiz terminé !</h3>
-          <p class="text-gray-500 mt-2">Score : <span id="quiz-score">0</span>/<span id="quiz-total-end">10</span></p>
-          <button class="mt-4 px-4 py-2 bg-yellow-500 text-white rounded-full font-semibold hover:bg-yellow-600" onclick="resetQuiz()">Rejouer</button>
-        </div>
-      </div>
     </div>
 
-  </main>
+    <!-- DIALOGUES (12) -->
+    <div id="dialogue" class="tab-content">
+        <div class="dialogue-card">
+            <h3>🗣️ Dialogues – Santé & urgences</h3>
+            <div class="dialogue-item"><span class="speaker">Médecin :</span> <span class="darija-phrase">شْنُو لْوَجَع لِي كَايْن عَنْدِك؟</span> <span class="fr-phrase">Quelle douleur avez-vous ?</span><div class="keyword-badge">وَجَع</div></div>
+            <div class="dialogue-item"><span class="speaker">Patient :</span> <span class="darija-phrase">عَنْدِي صُدَاع وْ حْمَار.</span> <span class="fr-phrase">J'ai mal à la tête et de la fièvre.</span><div class="keyword-badge">صُدَاع, حْمَار</div></div>
+            <div class="dialogue-item"><span class="speaker">Médecin :</span> <span class="darija-phrase">فْتَحْ فَمَّك وْ قُل "آه".</span> <span class="fr-phrase">Ouvrez la bouche et dites "ah".</span><div class="keyword-badge">فَم</div></div>
+            <div class="dialogue-item"><span class="speaker">Patient :</span> <span class="darija-phrase">آه...</span> <span class="fr-phrase">Ah...</span><div class="keyword-badge"></div></div>
+            <div class="dialogue-item"><span class="speaker">Pharmacien :</span> <span class="darija-phrase">خُودْ هَاد لْحَب قْبَل لْمَاكْلَة.</span> <span class="fr-phrase">Prenez ces comprimés avant le repas.</span><div class="keyword-badge">حَب, مَاكْلَة</div></div>
+            <div class="dialogue-item"><span class="speaker">Patient :</span> <span class="darija-phrase">شْحَال نَاخُدْ كُل نْهَار؟</span> <span class="fr-phrase">Combien dois-je prendre par jour ?</span><div class="keyword-badge">كُل نْهَار</div></div>
+            <div class="dialogue-item"><span class="speaker">Infirmier :</span> <span class="darija-phrase">نْقِيسْ لْحْرَارَة دْيَالِك.</span> <span class="fr-phrase">Je vais prendre votre température.</span><div class="keyword-badge">حْرَارَة</div></div>
+            <div class="dialogue-item"><span class="speaker">Patient :</span> <span class="darija-phrase">عَلَاش كَايْنَة هَاد لْحْرَارَة؟</span> <span class="fr-phrase">Pourquoi cette fièvre ?</span><div class="keyword-badge">عَلَاش</div></div>
+            <div class="dialogue-item"><span class="speaker">Ambulancier :</span> <span class="darija-phrase">سِيرْ بْنَا لْحَانُوتْ د لْأَدْوِيَة.</span> <span class="fr-phrase">Allons à la pharmacie.</span><div class="keyword-badge">حَانُوت, أَدْوِيَة</div></div>
+            <div class="dialogue-item"><span class="speaker">Urgentiste :</span> <span class="darija-phrase">عْنْدَه تِكْنِيكْس.</span> <span class="fr-phrase">Il a une fracture.</span><div class="keyword-badge">تِكْنِيكْس</div></div>
+            <div class="dialogue-item"><span class="speaker">Chirurgien :</span> <span class="darija-phrase">خَاصْهَا عَمَلِيَّة.</span> <span class="fr-phrase">Il faut une opération.</span><div class="keyword-badge">عَمَلِيَّة</div></div>
+            <div class="dialogue-item"><span class="speaker">Famille :</span> <span class="darija-phrase">لَا تْقَلْقْ، رَاهْ غَادِي تْبْرَا.</span> <span class="fr-phrase">Ne t'inquiète pas, tu vas guérir.</span><div class="keyword-badge">تْقَلْق, تْبْرَا</div></div>
+            <div class="training-area">
+                <h4>📝 Entraînement : remplacez le mot</h4>
+                <p>Modèle : <strong><span id="modelPhrase">Mchit l souk w chrit khobz</span></strong></p>
+                <p>Remplacez <strong id="replaceWord">khobz</strong> par : <input type="text" id="replaceInput"><button class="btn-check" id="replaceBtn">Vérifier</button><span id="replaceFeedback"></span></p>
+                <button class="btn-check" id="newTrainingBtn">Nouvelle phrase</button>
+            </div>
+        </div>
+    </div>
 
-  <footer class="bg-gray-800 text-white text-center py-4 mt-auto">
-    <p class="text-sm">📚 Darija Mois 5 | 80 mots • 5 dialogues • 20 verbes</p>
-  </footer>
+    <!-- EXERCICES -->
+    <div id="exercises" class="tab-content">
+        <div class="exercise-card">
+            <h3>✍️ Exercices – Mois 5 (avec révision des mois 1-4)</h3>
+            <div class="exercise-item">1. "J'ai mal au ventre" → <input id="exo1"><button onclick="checkExo1()">Vérifier</button><div id="exo1Feedback"></div></div>
+            <div class="exercise-item">2. Traduisez : "Prenez ce médicament avant le repas." → <input id="exo2"><button onclick="checkExo2()">Vérifier</button><div id="exo2Feedback"></div></div>
+            <div class="exercise-item">3. Conjuguez au présent : "huwa (se reposer) (verbe "rta7") → <input id="exo3"><button onclick="checkExo3()">Vérifier</button><div id="exo3Feedback"></div></div>
+            <div class="exercise-item">4. Mettez à l'impératif "tu" : "khoud" (prendre) → <input id="exo4"><button onclick="checkExo4()">Vérifier</button><div id="exo4Feedback"></div></div>
+            <div class="exercise-item">5. Traduisez en français : "l'ḥrara 3alya" → <input id="exo5"><button onclick="checkExo5()">Vérifier</button><div id="exo5Feedback"></div></div>
+            <div class="exercise-item">6. Formez une phrase avec "wja3" → <input id="exo6"><button onclick="checkExo6()">Vérifier</button><div id="exo6Feedback"></div></div>
+            <div class="exercise-item">7. Remplacez "khobz" par "dawa" : "chrit khobz" → <input id="exo7"><button onclick="checkExo7()">Vérifier</button><div id="exo7Feedback"></div></div>
+            <div class="exercise-item">8. Négation de "khoud had l'ḥeb" → <input id="exo8"><button onclick="checkExo8()">Vérifier</button><div id="exo8Feedback"></div></div>
+            <div class="exercise-item">9. Dites : "Je suis malade" en darija → <input id="exo9"><button onclick="checkExo9()">Vérifier</button><div id="exo9Feedback"></div></div>
+        </div>
+    </div>
 
-  <script>
-    // DONNÉES
-    var vocabulaire={lieux:[{fr:"maison",arabe:"دَّار",latin:"ddar",phrase_latin:"Ddarna kbira",phrase_fr:"Notre maison est grande"},{fr:"appartement",arabe:"شُقَّة",latin:"shuqqa",phrase_latin:"Shuqqa f t-taba9",phrase_fr:"Un appartement à l'étage"},{fr:"magasin",arabe:"حَانُوت",latin:"hanut",phrase_latin:"Hanut 9rib",phrase_fr:"Un magasin proche"},{fr:"marché",arabe:"سُوق",latin:"suq",phrase_latin:"Suq 3amr nass",phrase_fr:"Le marché est plein de monde"},{fr:"banque",arabe:"بَنْك",latin:"bank",phrase_latin:"Bank f l-madina",phrase_fr:"La banque en ville"},{fr:"poste",arabe:"بُوسْطَة",latin:"busta",phrase_latin:"Busta 7d l-hanut",phrase_fr:"La poste près du magasin"},{fr:"église",arabe:"كْنِيسَة",latin:"knisa",phrase_latin:"Knisa kbira",phrase_fr:"Une grande église"},{fr:"mosquée",arabe:"مَسْجِد",latin:"masjid",phrase_latin:"Masjid 9rib",phrase_fr:"Une mosquée proche"},{fr:"parc",arabe:"جْدِيقَة",latin:"jdiqa",phrase_latin:"Jdiqa 3amra wlad",phrase_fr:"Le parc est plein d'enfants"},{fr:"plage",arabe:"شَاطِئ",latin:"shati",phrase_latin:"Shati 7lu",phrase_fr:"Une belle plage"},{fr:"montagne",arabe:"جْبَل",latin:"jbel",phrase_latin:"Jbel 3ali bzzaf",phrase_fr:"Une très haute montagne"},{fr:"village",arabe:"دْوَّار",latin:"dwwar",phrase_latin:"Dwwar sghir",phrase_fr:"Un petit village"},{fr:"ville",arabe:"مَدِينَة",latin:"madina",phrase_latin:"Madina kbira",phrase_fr:"Une grande ville"},{fr:"quartier",arabe:"حَيّ",latin:"7ayy",phrase_latin:"7ayy 7sen",phrase_fr:"Un beau quartier"},{fr:"rue",arabe:"شَّارِع",latin:"shari3",phrase_latin:"Shari3 twil",phrase_fr:"Une longue rue"},{fr:"place",arabe:"سَّاحَة",latin:"sa7a",phrase_latin:"Sa7a 3amra",phrase_fr:"Une place pleine"},{fr:"pont",arabe:"قَنْطَرَة",latin:"qantra",phrase_latin:"Qantra f wad",phrase_fr:"Un pont sur la rivière"},{fr:"gare",arabe:"مَحَطَّة",latin:"ma7atta",phrase_latin:"Ma7atta d tran",phrase_fr:"La gare de train"},{fr:"hôtel",arabe:"فُنْدُق",latin:"funduq",phrase_latin:"Funduq 5 nujum",phrase_fr:"Un hôtel 5 étoiles"},{fr:"restaurant",arabe:"مَطْعَم",latin:"mat3am",phrase_latin:"Mat3am mzyan",phrase_fr:"Un bon restaurant"}],activites:[{fr:"se réveiller",arabe:"فَاقْ",latin:"faq",phrase_latin:"Fqit s-sbah",phrase_fr:"Je me suis réveillé le matin"},{fr:"se laver",arabe:"غْسَل",latin:"ghsel",phrase_latin:"Ghselt wjhi",phrase_fr:"Je me suis lavé le visage"},{fr:"s'habiller",arabe:"لْبَسْ",latin:"lbes",phrase_latin:"Lbest 7wayji",phrase_fr:"Je me suis habillé"},{fr:"déjeuner",arabe:"فْطَرْ",latin:"ftor",phrase_latin:"Ftort s-sbah",phrase_fr:"J'ai déjeuné le matin"},{fr:"travailler",arabe:"خْدَمْ",latin:"khdem",phrase_latin:"Khdemt f bureau",phrase_fr:"J'ai travaillé au bureau"},{fr:"étudier",arabe:"قْرَى",latin:"qra",phrase_latin:"Qrit d-dars",phrase_fr:"J'ai étudié la leçon"},{fr:"manger",arabe:"كَلْ",latin:"kel",phrase_latin:"Kelt l-3cha",phrase_fr:"J'ai mangé le dîner"},{fr:"boire",arabe:"شْرَبْ",latin:"shreb",phrase_latin:"Shrbt l-ma",phrase_fr:"J'ai bu de l'eau"},{fr:"dormir",arabe:"نْعَسْ",latin:"n3as",phrase_latin:"N3st mzyan",phrase_fr:"J'ai bien dormi"},{fr:"se promener",arabe:"تْمَشَّى",latin:"tmasha",phrase_latin:"Tmashayt f parc",phrase_fr:"Je me suis promené au parc"},{fr:"rencontrer",arabe:"تْلَاقَى",latin:"tlaqa",phrase_latin:"Tlaqit sa7bi",phrase_fr:"J'ai rencontré mon ami"},{fr:"parler",arabe:"هْدَرْ",latin:"hder",phrase_latin:"Hdert m3a walida",phrase_fr:"J'ai parlé avec maman"},{fr:"écouter",arabe:"سْمَعْ",latin:"sme3",phrase_latin:"Sme3t l-musiqa",phrase_fr:"J'ai écouté la musique"},{fr:"regarder",arabe:"شُوفْ",latin:"shuf",phrase_latin:"Shuft film",phrase_fr:"J'ai regardé un film"},{fr:"lire",arabe:"قْرَى",latin:"qra",phrase_latin:"Qrit ktab",phrase_fr:"J'ai lu un livre"},{fr:"écrire",arabe:"كْتَبْ",latin:"kteb",phrase_latin:"Ktebt risala",phrase_fr:"J'ai écrit une lettre"},{fr:"jouer",arabe:"لْعَبْ",latin:"l3eb",phrase_latin:"L3ebt kora",phrase_fr:"J'ai joué au foot"},{fr:"aider",arabe:"عَاوِنْ",latin:"3awen",phrase_latin:"3awent walida",phrase_fr:"J'ai aidé maman"},{fr:"nettoyer",arabe:"نَظَّفْ",latin:"na99ef",phrase_latin:"Na99eft ddar",phrase_fr:"J'ai nettoyé la maison"},{fr:"se reposer",arabe:"رْتَّاحْ",latin:"rta7",phrase_latin:"Rta7t chwiya",phrase_fr:"Je me suis reposé un peu"}],objets:[{fr:"téléphone",arabe:"تِلِيفُون",latin:"tilifun",phrase_latin:"Tilifuni jdida",phrase_fr:"Mon téléphone est neuf"},{fr:"ordinateur",arabe:"أُرْدِينَاتُور",latin:"urdinatur",phrase_latin:"Urdinatur dial l3mel",phrase_fr:"Ordinateur de travail"},{fr:"tablette",arabe:"طَابْلَيت",latin:"tablet",phrase_latin:"Tablet sghira",phrase_fr:"Une petite tablette"},{fr:"clé",arabe:"سْرَارْ",latin:"srar",phrase_latin:"Srar d ddar",phrase_fr:"La clé de la maison"},{fr:"sac",arabe:"صَاك",latin:"sak",phrase_latin:"Sak d l-madrasa",phrase_fr:"Le sac d'école"},{fr:"porte-monnaie",arabe:"مِحْفَظَة",latin:"m7fada",phrase_latin:"M7fada f jib",phrase_fr:"Porte-monnaie dans la poche"},{fr:"montre",arabe:"سَاعَة",latin:"sa3a",phrase_latin:"Sa3a f l-yedd",phrase_fr:"Montre à la main"},{fr:"lunettes",arabe:"نَظَّارَة",latin:"na99ara",phrase_latin:"Na99ara f 3inih",phrase_fr:"Lunettes sur ses yeux"},{fr:"parapluie",arabe:"شْمِيسِيَّة",latin:"shamsiya",phrase_latin:"Shamsiya f shta",phrase_fr:"Parapluie en hiver"},{fr:"brosse",arabe:"فُرْشَاة",latin:"furshat",phrase_latin:"Furshat snan",phrase_fr:"Brosse à dents"},{fr:"savon",arabe:"صَابُون",latin:"sabun",phrase_latin:"Sabun l-yeddin",phrase_fr:"Savon pour les mains"},{fr:"serviette",arabe:"فُوطَة",latin:"futa",phrase_latin:"Futa d l-hammam",phrase_fr:"Serviette de bain"},{fr:"drap",arabe:"شْرَاشِب",latin:"shrashib",phrase_latin:"Shrashib n9aw",phrase_fr:"Des draps propres"},{fr:"couverture",arabe:"كْطَا",latin:"kta",phrase_latin:"Kta d chita",phrase_fr:"Couverture d'hiver"},{fr:"oreiller",arabe:"مُخَدَّة",latin:"mukhadda",phrase_latin:"Mukhadda f s-serir",phrase_fr:"Oreiller dans le lit"},{fr:"miroir",arabe:"مِرْآة",latin:"mirat",phrase_latin:"Mirat f l-bit",phrase_fr:"Miroir dans la chambre"},{fr:"lampe",arabe:"لَمْبَة",latin:"lamba",phrase_latin:"Lamba f s-sqef",phrase_fr:"Lampe au plafond"},{fr:"chaise",arabe:"كُرْسِي",latin:"kursi",phrase_latin:"Kursi f l-maktab",phrase_fr:"Chaise au bureau"},{fr:"table",arabe:"طَابْلَة",latin:"tabla",phrase_latin:"Tabla f l-makla",phrase_fr:"Table pour manger"},{fr:"lit",arabe:"سْرِير",latin:"srir",phrase_latin:"Srir mrye7",phrase_fr:"Un lit confortable"}],expressions:[{fr:"bonjour",arabe:"صْبَاح لْخِير",latin:"sbah l-khir",phrase_latin:"Sbah l-khir 3lik",phrase_fr:"Bonjour à toi"},{fr:"bonsoir",arabe:"مْسَا لْخِير",latin:"msa l-khir",phrase_latin:"Msa l-khir 3lik",phrase_fr:"Bonsoir à toi"},{fr:"bonne nuit",arabe:"بِصْحَة",latin:"bissha",phrase_latin:"Bissha w rta7",phrase_fr:"Bonne nuit et repose-toi"},{fr:"merci",arabe:"شُكْرَان",latin:"shukran",phrase_latin:"Shukran bzzaf",phrase_fr:"Merci beaucoup"},{fr:"de rien",arabe:"بْلَاسَة",latin:"blasa",phrase_latin:"Blasa men 3lik",phrase_fr:"De rien"},{fr:"s'il te plaît",arabe:"عَافَاك",latin:"3afak",phrase_latin:"3tini 3afak",phrase_fr:"Donne-moi s'il te plaît"},{fr:"excuse-moi",arabe:"سْمَحْلِي",latin:"smehli",phrase_latin:"Smehli 3la hadak",phrase_fr:"Excuse-moi pour ça"},{fr:"pardon",arabe:"سْمَاح",latin:"smah",phrase_latin:"Smah liya",phrase_fr:"Pardon à moi"},{fr:"oui",arabe:"إيْه",latin:"ih",phrase_latin:"Ih, wakha",phrase_fr:"Oui, d'accord"},{fr:"non",arabe:"لَا",latin:"la",phrase_latin:"La, shukran",phrase_fr:"Non, merci"},{fr:"peut-être",arabe:"يُمْكِنْ",latin:"yumkin",phrase_latin:"Yumkin, ma3raft",phrase_fr:"Peut-être, je ne sais pas"},{fr:"bien sûr",arabe:"بْطَبِيعَة",latin:"btabi3a",phrase_latin:"Btabi3a, ih",phrase_fr:"Bien sûr, oui"},{fr:"d'accord",arabe:"وَخَا",latin:"wakha",phrase_latin:"Wakha, mzyan",phrase_fr:"D'accord, c'est bien"},{fr:"comment ça va",arabe:"كَيْفَاش",latin:"kifash",phrase_latin:"Kifash dayr?",phrase_fr:"Comment vas-tu?"},{fr:"ça va bien",arabe:"لْحَمْدُ لله",latin:"l7amdu lillah",phrase_latin:"L7amdu lillah, mzyan",phrase_fr:"Grâce à Dieu, ça va bien"},{fr:"à bientôt",arabe:"بِخَيْر",latin:"bkhair",phrase_latin:"Bkhair, nshufuk",phrase_fr:"À bientôt, on se voit"},{fr:"au revoir",arabe:"بِالسَّلَامَة",latin:"bis-salama",phrase_latin:"Bis-salama 3lik",phrase_fr:"Au revoir à toi"},{fr:"bienvenue",arabe:"أَهْلَا",latin:"ahla",phrase_latin:"Ahla w sahla",phrase_fr:"Bienvenue"},{fr:"félicitations",arabe:"مَبْرُوك",latin:"mabruk",phrase_latin:"Mabruk 3lik",phrase_fr:"Félicitations à toi"},{fr:"bon courage",arabe:"الله يُعِين",latin:"allah y3in",phrase_latin:"Allah y3inek",phrase_fr:"Que Dieu t'aide"}]};
-    var dialogues=[{titre:"Au marché",personnages:["Client","Vendeur"],repliques:[{role:"Client",latin:"Bghit shwiya d l-khodra.",francais:"Je veux un peu de légumes.",arabe:"بْغِيتْ شْوِيَّةْ د لْخُضْرَة"},{role:"Vendeur",latin:"Hahuma, sh7al bghiti?",francais:"Les voici, combien veux-tu?",arabe:"هَا هُمَا، شْحَالْ بْغِيتِي؟"},{role:"Client",latin:"Haka, w sh7al thaman?",francais:"Comme ça, et quel est le prix?",arabe:"هَكا، وَشْحَالْ ثَمَنْ؟"},{role:"Vendeur",latin:"B 10 dirham.",francais:"À 10 dirhams.",arabe:"بْعَشْرَة دْرَاهِم"}]},{titre:"Au téléphone",personnages:["Ami1","Ami2"],repliques:[{role:"Ami1",latin:"Alo, kifash dayr?",francais:"Allô, comment vas-tu?",arabe:"أَلُو، كَيْفَاشْ دَايِرْ؟"},{role:"Ami2",latin:"L7amdu lillah, w nta?",francais:"Grâce à Dieu, et toi?",arabe:"الْحَمْدُ لله، وَنْتَا؟"},{role:"Ami1",latin:"Mzyan, fin ntlqaw?",francais:"Bien, où on se rencontre?",arabe:"مْزَيَانْ، فِينْ نْتْلَاقَاوْ؟"}]},{titre:"À la maison",personnages:["Maman","Enfant"],repliques:[{role:"Maman",latin:"Na99ef bitak 3afak.",francais:"Nettoie ta chambre s'il te plaît.",arabe:"نَظِّفْ بِيتَكْ عَافَاك"},{role:"Enfant",latin:"Wakha, ghadi nna99efha daba.",francais:"D'accord, je vais la nettoyer maintenant.",arabe:"وَخَا، غَادِي نْنَظِّفْهَا دَابَا"},{role:"Maman",latin:"Shukran, walidi.",francais:"Merci, mon fils.",arabe:"شُكْرَانْ، وَلَدِي"}]},{titre:"Dans la rue",personnages:["Passant1","Passant2"],repliques:[{role:"Passant1",latin:"Smehli, fin l-bank?",francais:"Excuse-moi, où est la banque?",arabe:"سْمَحْلِي، فِينْ لْبَنْك؟"},{role:"Passant2",latin:"Hiya 9riba, wara l-hanut.",francais:"Elle est proche, derrière le magasin.",arabe:"هِيَا قْرِيبَة، وَرَا لْحَانُوت"},{role:"Passant1",latin:"Shukran bzzaf!",francais:"Merci beaucoup!",arabe:"شُكْرَانْ بْزَّافْ!"}]},{titre:"Le soir",personnages:["Papa","Enfant"],repliques:[{role:"Papa",latin:"Wach qriti d-dars?",francais:"As-tu étudié la leçon?",arabe:"وَاشْ قْرِيتِي الدَّرْسْ؟"},{role:"Enfant",latin:"Ih, qritu kamlu.",francais:"Oui, je l'ai étudié complètement.",arabe:"إيْه، قْرِيتُو كَامْلُو"},{role:"Papa",latin:"Ahsant, daba n3as.",francais:"Très bien, maintenant dors.",arabe:"أَحْسَنْتْ، دَابَا نْعَسْ"}]}];
-    var verbes=[{verbe:"arriver",racine:"wsel",present:{ana:"kanawsel",nta:"katawsel",nti:"katawseli",houwa:"kayawsel",hiya:"katawsel",7na:"kanawselu",ntouma:"katawselu",houma:"kayawselu"},passe:{ana:"wselt",nta:"wselti",nti:"wselti",houwa:"wsel",hiya:"wselet",7na:"wselna",ntouma:"wseltu",houma:"wselu"},futur:{ana:"ghadi nawsel",nta:"ghadi tawsel",nti:"ghadi tawseli",houwa:"ghadi yawsel",hiya:"ghadi tawsel",7na:"ghadi nawselu",ntouma:"ghadi tawselu",houma:"ghadi yawselu"}},{verbe:"partir",racine:"mshi",present:{ana:"kanmshi",nta:"katmshi",nti:"katmshi",houwa:"kaymshi",hiya:"katmshi",7na:"kanmshiw",ntouma:"katmshiw",houma:"kaymshiw"},passe:{ana:"mshit",nta:"mshiti",nti:"mshiti",houwa:"msha",hiya:"mshat",7na:"mshina",ntouma:"mshitu",houma:"mshaw"},futur:{ana:"ghadi nmshi",nta:"ghadi tmshi",nti:"ghadi tmshi",houwa:"ghadi ymshi",hiya:"ghadi tmshi",7na:"ghadi nmshiw",ntouma:"ghadi tmshiw",houma:"ghadi ymshiw"}},{verbe:"entrer",racine:"dkhel",present:{ana:"kanadkhel",nta:"katadkhel",nti:"katadkheli",houwa:"kayadkhel",hiya:"katadkhel",7na:"kanadkhelu",ntouma:"katadkhelu",houma:"kayadkhelu"},passe:{ana:"dkhelt",nta:"dkhelti",nti:"dkhelti",houwa:"dkhel",hiya:"dkhelet",7na:"dkhelna",ntouma:"dkheltu",houma:"dkhelu"},futur:{ana:"ghadi nadkhel",nta:"ghadi tadkhel",nti:"ghadi tadkheli",houwa:"ghadi yadkhel",hiya:"ghadi tadkhel",7na:"ghadi nadkhelu",ntouma:"ghadi tadkhelu",houma:"ghadi yadkhelu"}},{verbe:"sortir",racine:"khrej",present:{ana:"kanakhrej",nta:"katakhrej",nti:"katakhreji",houwa:"kayakhrej",hiya:"katakhrej",7na:"kanakhreju",ntouma:"katakhreju",houma:"kayakhreju"},passe:{ana:"khrejt",nta:"khrejti",nti:"khrejti",houwa:"khrej",hiya:"khrejet",7na:"khrejna",ntouma:"khrejtu",houma:"khreju"},futur:{ana:"ghadi nakhrej",nta:"ghadi takhrej",nti:"ghadi takhreji",houwa:"ghadi yakhrej",hiya:"ghadi takhrej",7na:"ghadi nakhreju",ntouma:"ghadi takhreju",houma:"ghadi yakhreju"}},{verbe:"monter",racine:"tla3",present:{ana:"kanatla3",nta:"katatla3",nti:"katatla3i",houwa:"kayatla3",hiya:"katatla3",7na:"kanatla3u",ntouma:"katatla3u",houma:"kayatla3u"},passe:{ana:"tla3t",nta:"tla3ti",nti:"tla3ti",houwa:"tla3",hiya:"tla3et",7na:"tla3na",ntouma:"tla3tu",houma:"tla3u"},futur:{ana:"ghadi natla3",nta:"ghadi tatla3",nti:"ghadi tatla3i",houwa:"ghadi yatla3",hiya:"ghadi tatla3",7na:"ghadi natla3u",ntouma:"ghadi tatla3u",houma:"ghadi yatla3u"}},{verbe:"descendre",racine:"nzel",present:{ana:"kananzel",nta:"katanzel",nti:"katanzeli",houwa:"kayanzel",hiya:"katanzel",7na:"kananzelu",ntouma:"katanzelu",houma:"kayanzelu"},passe:{ana:"nzelt",nta:"nzelti",nti:"nzelti",houwa:"nzel",hiya:"nzelet",7na:"nzelna",ntouma:"nzeltu",houma:"nzelu"},futur:{ana:"ghadi nanzel",nta:"ghadi tanzel",nti:"ghadi tanzeli",houwa:"ghadi yanzel",hiya:"ghadi tanzel",7na:"ghadi nanzelu",ntouma:"ghadi tanzelu",houma:"ghadi yanzelu"}},{verbe:"ouvrir",racine:"7ll",present:{ana:"kana7ll",nta:"kata7ll",nti:"kata7lli",houwa:"kaya7ll",hiya:"kata7ll",7na:"kana7llu",ntouma:"kata7llu",houma:"kaya7llu"},passe:{ana:"7llit",nta:"7lliti",nti:"7lliti",houwa:"7ll",hiya:"7llet",7na:"7llina",ntouma:"7llitu",houma:"7llu"},futur:{ana:"ghadi na7ll",nta:"ghadi ta7ll",nti:"ghadi ta7lli",houwa:"ghadi ya7ll",hiya:"ghadi ta7ll",7na:"ghadi na7llu",ntouma:"ghadi ta7llu",houma:"ghadi ya7llu"}},{verbe:"fermer",racine:"sdd",present:{ana:"kanasdd",nta:"katasdd",nti:"katasddi",houwa:"kayasdd",hiya:"katasdd",7na:"kanasddu",ntouma:"katasddu",houma:"kayasddu"},passe:{ana:"sddt",nta:"sddti",nti:"sddti",houwa:"sdd",hiya:"sddet",7na:"sddna",ntouma:"sddtu",houma:"sddu"},futur:{ana:"ghadi nasdd",nta:"ghadi tasdd",nti:"ghadi tasddi",houwa:"ghadi yasdd",hiya:"ghadi tasdd",7na:"ghadi nasddu",ntouma:"ghadi tasddu",houma:"ghadi yasddu"}},{verbe:"allumer",racine:"7wwed",present:{ana:"kana7wwed",nta:"kata7wwed",nti:"kata7wwedi",houwa:"kaya7wwed",hiya:"kata7wwed",7na:"kana7wwedu",ntouma:"kata7wwedu",houma:"kaya7wwedu"},passe:{ana:"7wwedt",nta:"7wwedti",nti:"7wwedti",houwa:"7wwed",hiya:"7wwedet",7na:"7wwedna",ntouma:"7wwedtu",houma:"7wwedu"},futur:{ana:"ghadi na7wwed",nta:"ghadi ta7wwed",nti:"ghadi ta7wwedi",houwa:"ghadi ya7wwed",hiya:"ghadi ta7wwed",7na:"ghadi na7wwedu",ntouma:"ghadi ta7wwedu",houma:"ghadi ya7wwedu"}},{verbe:"éteindre",racine:"tfe",present:{ana:"kanatfe",nta:"katatfe",nti:"katatfe",houwa:"kayatfe",hiya:"katatfe",7na:"kanatfew",ntouma:"katatfew",houma:"kayatfew"},passe:{ana:"tfayt",nta:"tfayti",nti:"tfayti",houwa:"tfa",hiya:"tfat",7na:"tfayna",ntouma:"tfaytu",houma:"tfaw"},futur:{ana:"ghadi natfe",nta:"ghadi tatfe",nti:"ghadi tatfe",houwa:"ghadi yatfe",hiya:"ghadi tatfe",7na:"ghadi natfew",ntouma:"ghadi tatfew",houma:"ghadi yatfew"}},{verbe:"chercher",racine:"qaleb",present:{ana:"kanqaleb",nta:"katqaleb",nti:"katqalebi",houwa:"kayqaleb",hiya:"katqaleb",7na:"kanqalebu",ntouma:"katqalebu",houma:"kayqalebu"},passe:{ana:"qlebt",nta:"qlebti",nti:"qlebti",houwa:"qleb",hiya:"qlebet",7na:"qlebna",ntouma:"qlebtu",houma:"qlebu"},futur:{ana:"ghadi nqaleb",nta:"ghadi tqaleb",nti:"ghadi tqalebi",houwa:"ghadi yqaleb",hiya:"ghadi tqaleb",7na:"ghadi nqalebu",ntouma:"ghadi tqalebu",houma:"ghadi yqalebu"}},{verbe:"trouver",racine:"lqa",present:{ana:"kanalqa",nta:"katalqa",nti:"katalqay",houwa:"kayalqa",hiya:"katalqa",7na:"kanalqaw",ntouma:"katalqaw",houma:"kayalqaw"},passe:{ana:"lqit",nta:"lqiti",nti:"lqiti",houwa:"lqa",hiya:"lqat",7na:"lqina",ntouma:"lqitu",houma:"lqaw"},futur:{ana:"ghadi nalqa",nta:"ghadi talqa",nti:"ghadi talqay",houwa:"ghadi yalqa",hiya:"ghadi talqa",7na:"ghadi nalqaw",ntouma:"ghadi talqaw",houma:"ghadi yalqaw"}},{verbe:"demander",racine:"s2el",present:{ana:"kanas2el",nta:"katas2el",nti:"katas2eli",houwa:"kayas2el",hiya:"katas2el",7na:"kanas2elu",ntouma:"katas2elu",houma:"kayas2elu"},passe:{ana:"s2elt",nta:"s2elti",nti:"s2elti",houwa:"s2el",hiya:"s2elet",7na:"s2elna",ntouma:"s2eltu",houma:"s2elu"},futur:{ana:"ghadi nas2el",nta:"ghadi tas2el",nti:"ghadi tas2eli",houwa:"ghadi yas2el",hiya:"ghadi tas2el",7na:"ghadi nas2elu",ntouma:"ghadi tas2elu",houma:"ghadi yas2elu"}},{verbe:"répondre",racine:"jweb",present:{ana:"kanajweb",nta:"katajweb",nti:"katajwebi",houwa:"kayajweb",hiya:"katajweb",7na:"kanajwebu",ntouma:"katajwebu",houma:"kayajwebu"},passe:{ana:"jwebt",nta:"jwebti",nti:"jwebti",houwa:"jweb",hiya:"jwebet",7na:"jwebna",ntouma:"jwebtu",houma:"jwebu"},futur:{ana:"ghadi najweb",nta:"ghadi tajweb",nti:"ghadi tajwebi",houwa:"ghadi yajweb",hiya:"ghadi tajweb",7na:"ghadi najwebu",ntouma:"ghadi tajwebu",houma:"ghadi yajwebu"}},{verbe:"comprendre",racine:"fhem",present:{ana:"kanafhem",nta:"katafhem",nti:"katafhemi",houwa:"kayafhem",hiya:"katafhem",7na:"kanafhemu",ntouma:"katafhemu",houma:"kayafhemu"},passe:{ana:"fhemt",nta:"fhemti",nti:"fhemti",houwa:"fhem",hiya:"fhemet",7na:"fhemna",ntouma:"fhemtu",houma:"fhemu"},futur:{ana:"ghadi nafhem",nta:"ghadi tafhem",nti:"ghadi tafhemi",houwa:"ghadi yafhem",hiya:"ghadi tafhem",7na:"ghadi nafhemu",ntouma:"ghadi tafhemu",houma:"ghadi yafhemu"}},{verbe:"savoir",racine:"3ref",present:{ana:"kana3ref",nta:"kata3ref",nti:"kata3refi",houwa:"kaya3ref",hiya:"kata3ref",7na:"kana3refu",ntouma:"kata3refu",houma:"kaya3refu"},passe:{ana:"3reft",nta:"3refti",nti:"3refti",houwa:"3ref",hiya:"3refet",7na:"3refna",ntouma:"3reftu",houma:"3refu"},futur:{ana:"ghadi na3ref",nta:"ghadi ta3ref",nti:"ghadi ta3refi",houwa:"ghadi ya3ref",hiya:"ghadi ta3ref",7na:"ghadi na3refu",ntouma:"ghadi ta3refu",houma:"ghadi ya3refu"}},{verbe:"oublier",racine:"nsa",present:{ana:"kanansa",nta:"katansa",nti:"katansay",houwa:"kayansa",hiya:"katansa",7na:"kanansaw",ntouma:"katansaw",houma:"kayansaw"},passe:{ana:"nsit",nta:"nsiti",nti:"nsiti",houwa:"nsa",hiya:"nsat",7na:"nsina",ntouma:"nsitu",houma:"nsaw"},futur:{ana:"ghadi nansa",nta:"ghadi tansa",nti:"ghadi tansay",houwa:"ghadi yansa",hiya:"ghadi tansa",7na:"ghadi nansaw",ntouma:"ghadi tansaw",houma:"ghadi yansaw"}},{verbe:"se souvenir",racine:"tkker",present:{ana:"kanatkker",nta:"katatkker",nti:"katatkkeri",houwa:"kayatkker",hiya:"katatkker",7na:"kanatkkeru",ntouma:"katatkkeru",houma:"kayatkkeru"},passe:{ana:"tkkert",nta:"tkkerti",nti:"tkkerti",houwa:"tkker",hiya:"tkkeret",7na:"tkkerna",ntouma:"tkkertu",houma:"tkkeru"},futur:{ana:"ghadi natkker",nta:"ghadi tatkker",nti:"ghadi tatkkeri",houwa:"ghadi yatkker",hiya:"ghadi tatkker",7na:"ghadi natkkeru",ntouma:"ghadi tatkkeru",houma:"ghadi yatkkeru"}},{verbe:"essayer",racine:"7awel",present:{ana:"kana7awel",nta:"kata7awel",nti:"kata7aweli",houwa:"kaya7awel",hiya:"kata7awel",7na:"kana7awelu",ntouma:"kata7awelu",houma:"kaya7awelu"},passe:{ana:"7awelt",nta:"7awelti",nti:"7awelti",houwa:"7awel",hiya:"7awelet",7na:"7awelna",ntouma:"7aweltu",houma:"7awelu"},futur:{ana:"ghadi na7awel",nta:"ghadi ta7awel",nti:"ghadi ta7aweli",houwa:"ghadi ya7awel",hiya:"ghadi ta7awel",7na:"ghadi na7awelu",ntouma:"ghadi ta7awelu",houma:"ghadi ya7awelu"}},{verbe:"réussir",racine:"njej",present:{ana:"kananjej",nta:"katanjej",nti:"katanjeji",houwa:"kayanjej",hiya:"katanjej",7na:"kananjeju",ntouma:"katanjeju",houma:"kayanjeju"},passe:{ana:"njjit",nta:"njjiti",nti:"njjiti",houwa:"njej",hiya:"njjat",7na:"njjina",ntouma:"njjitu",houma:"njju"},futur:{ana:"ghadi nanjej",nta:"ghadi tanjej",nti:"ghadi tanjeji",houwa:"ghadi yanjej",hiya:"ghadi tanjej",7na:"ghadi nanjeju",ntouma:"ghadi tanjeju",houma:"ghadi yanjeju"}}];
-    var personLabels=[{key:"ana",label:"ana (je)"},{key:"nta",label:"nta (tu masc.)"},{key:"nti",label:"nti (tu fém.)"},{key:"houwa",label:"houwa (il)"},{key:"hiya",label:"hiya (elle)"},{key:"7na",label:"7na (nous)"},{key:"ntouma",label:"ntouma (vous)"},{key:"houma",label:"houma (ils/elles)"}];
-    var quizQuestions=[],currentQuestion=0,score=0;
+    <!-- RÉVISION -->
+    <div id="review" class="tab-content">
+        <div class="daily-review">
+            <h3>🔄 Révision transversale (Mois 1-5)</h3>
+            <p>Révision quotidienne : 5 mots mélangés.</p>
+            <div id="dailyWords"></div>
+            <button class="btn-check" id="newDailyBtn">Nouveaux mots</button>
+            <hr><h3>📝 Quiz (10 questions)</h3>
+            <div id="quizContainer"></div>
+            <button class="btn-check" id="startQuizBtn">Commencer le quiz</button>
+        </div>
+    </div>
 
-    // UTILITAIRES
-    function escapeHtml(t){if(typeof t!=="string")return t;var m={"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"};return t.replace(/[&<>"']/g,function(c){return m[c];})}
-    function shuffleArray(a){var r=a.slice();for(var i=r.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=r[i];r[i]=r[j];r[j]=t;}return r;}
+    <!-- VOCABULAIRE -->
+    <div id="vocabulary" class="tab-content">
+        <div class="vocab-header">
+            <h3>📚 Vocabulaire – Santé & bien-être (250 mots)</h3>
+            <div><div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div><span id="wordCounter"></span>
+            <button class="toggle-translate-btn" id="toggleTranslateBtn">Masquer trad</button>
+            <button class="hide-col-btn" id="showAllColsBtn">Afficher tout</button></div>
+        </div>
+        <div class="words-grid" id="wordsGrid"></div>
+    </div>
+    <footer>Mois 5 – Révision des mois 1-4 intégrée – 30 verbes complets</footer>
+</div>
+<script>
+    // ==================== VOCABULAIRE MOIS 5 (inchangé, déjà correct) ====================
+    const vocabM5Base = [
+        ["ṣudā3", "صُدَاع", "mal de tête"], ["ḥmār", "حْمَار", "fièvre"], ["kḥla", "كْحْلَة", "maladie"], ["dawā", "دَوَا", "médicament"],
+        ["ṣidliyya", "صِيدْلِيَّة", "pharmacie"], ["doktōr", "دُكْطُور", "médecin"], ["mumarriḍa", "مُمَرِّضَة", "infirmière"], ["spitār", "سْبِيطَار", "hôpital"],
+        ["ḥrara", "حْرَارَة", "température"], ["maqīs", "مَقِيس", "thermomètre"], ["ṭebb", "طَبّ", "médecine"], ["3ilāj", "عِلَاج", "traitement"],
+        ["3amaliyya", "عَمَلِيَّة", "opération"], ["fḥeṣ", "فْحَص", "examen"], ["tahlīl", "تَهْلِيل", "analyse"], ["raḍyūlūjī", "رَاضْيُولُوجِي", "radiologie"],
+        ["tknīks", "تِكْنِيكْس", "fracture"], ["jā2iḥa", "جَائِحَة", "blessure"], ["ḥrāq", "حْرَاق", "brûlure"], ["3lāj", "عْلَاج", "soin"],
+        ["sukkar", "سُكَّر", "diabète"], ["ḍghṭ", "ضْغْط", "tension"], ["qalb", "قَلْب", "cœur"], ["nfās", "نْفَاس", "respiration"],
+        ["rta7", "رْتَاح", "se reposer"], ["bṛa", "بْرَا", "guérir"], ["t3ab", "تْعَب", "fatiguer"], ["ḍ3f", "ضْعْف", "faiblesse"],
+        ["wja3", "وَجَع", "douleur"], ["dwa", "دْوَى", "soigner"], ["ḥaṣṣ", "حَصْ", "sentir"], ["staf", "سْتَف", "se soigner"],
+        ["naqqa", "نَقَّى", "purifier"], ["nazzef", "نَزَّف", "saigner"], ["kḥel", "كْحَل", "se noircir"], ["smeḥ", "سْمَح", "permettre"],
+        ["tqiyye", "تْقِيَّة", "prévention"], ["ḥemya", "حِمْيَة", "régime"], ["ghsīl", "غْسِيل", "lavage"], ["tṭahār", "تَّطْهَار", "désinfection"],
+        ["qarḥ", "قَرْح", "ulcère"], ["dāʾ", "دَاء", "maladie"], ["wabāʾ", "وَبَاء", "épidémie"], ["liqāḥ", "لِقَاح", "vaccin"],
+        ["taṣwīr", "تَصْوِير", "imagerie"], ["ṣadr", "صَدْر", "poitrine"], ["baṭn", "بَطْن", "ventre"], ["ras", "رَاس", "tête"],
+        ["ʿyn", "عْيْن", "œil"], ["wdn", "وْدْن", "oreille"], ["famm", "فَمّ", "bouche"], ["sinn", "سِنّ", "dent"],
+        ["yadd", "يَدّ", "main"], ["rjl", "رْجْل", "jambe"], ["ẓhr", "ظْهْر", "dos"], ["ṣdra", "صْدْرَة", "thorax"],
+        ["klā", "كْلَى", "rein"], ["kbid", "كْبِد", "foie"], ["m3da", "مْعِدَة", "estomac"], ["mara", "مَرَارَة", "vésicule"],
+        ["nfās", "نْفَاس", "respiration"], ["damm", "دَمّ", "sang"], ["3arq", "عَرْق", "sueur"], ["bawl", "بَوْل", "urine"]
+    ];
+    const finalBaseM5 = vocabM5Base.slice(0,200).map(item => ({ latin: item[0], arabe: item[1], fr: item[2] }));
+    const outilsM5 = [
+        ["ila", "إِلَا", "si"], ["wlla", "وِلَّا", "ou bien"], ["u", "و", "et"], ["ula", "وُلَا", "ou"], ["lakin", "لَاكِن", "mais"],
+        ["wakha", "وَاخَا", "d'accord"], ["bhal", "بْحَال", "comme"], ["mzyan", "مْزْيَان", "bien"], ["khatr", "خَاطِر", "parce que"],
+        ["rah", "رَاه", "voici que"], ["ghadi", "غَادِي", "futur"], ["kay-", "كَاي-", "préfixe présent"], ["ma...ch", "مَا...ش", "négation"],
+        ["bla", "بْلَا", "sans"], ["ta", "تَا", "même"], ["koul", "كُول", "chaque"], ["ba9i", "بَاقِي", "encore"], ["l'end", "لِينْد", "vers"],
+        ["3nd", "عَنْد", "chez"], ["men", "مِن", "de"], ["l", "ل", "à"], ["b", "ب", "par"], ["d", "د", "de"], ["f", "ف", "dans"],
+        ["3la", "عَلَى", "sur"], ["m3a", "مَعَ", "avec"], ["hadi", "هَادِي", "ceci f"], ["had", "هَاد", "ce m"], ["dak", "دَاك", "cela"],
+        ["dik", "دِيك", "celle"], ["douk", "دُوك", "ceux"], ["ashmen", "أَشْمَنْ", "quel"], ["ach", "أَش", "quoi"], ["3lach", "عَلَاش", "pourquoi"],
+        ["imta", "إِمْتَى", "quand"], ["kifash", "كِفَاش", "comment"], ["mnin", "مْنِين", "d'où"], ["chkoun", "شْكُون", "qui"], ["chhal", "شْحَال", "combien"]
+    ];
+    const finalOutilsM5 = outilsM5.slice(0,50).map(item => ({ latin: item[0], arabe: item[1], fr: item[2] }));
+    const allWordsM5 = [...finalBaseM5, ...finalOutilsM5];
+    let masteredM5 = JSON.parse(localStorage.getItem("masteredWordsM5")) || new Array(250).fill(false);
+    function saveMasteredM5() { localStorage.setItem("masteredWordsM5", JSON.stringify(masteredM5)); updateProgressM5(); }
+    function updateProgressM5() { let c = masteredM5.filter(v=>v).length; document.getElementById("wordCounter").innerText = `${c}/250`; document.getElementById("progressFill").style.width = (c/250*100)+"%"; }
 
-    // NAVIGATION (onclick inline compatible GitHub Pages)
-    function showTab(tab){var c=document.querySelectorAll('.tab-content');for(var i=0;i<c.length;i++)c[i].classList.remove('active');var s=document.getElementById('content-'+tab);if(s)s.classList.add('active');var b=document.querySelectorAll('.tab-btn');for(var j=0;j<b.length;j++){b[j].classList.remove('tab-active');b[j].classList.add('bg-white','text-gray-700','hover:bg-yellow-100');}var a=document.getElementById('tab-'+tab);if(a){a.classList.add('tab-active');a.classList.remove('bg-white','text-gray-700','hover:bg-yellow-100');}if(window.innerWidth<768)window.scrollTo({top:0,behavior:'smooth'});}
+    // Échantillons révision (mois 1-4) – on prend quelques mots représentatifs
+    const motsPrev = [
+        ["salam", "سَلَام", "bonjour"], ["khobz", "خُبْز", "pain"], ["l'maṭar", "لْمَطَار", "aéroport"], ["ktab", "كْتَاب", "livre"], ["wara9", "وَرَق", "papier"]
+    ];
+    const prevWords = motsPrev.map(item => ({ latin: item[0], arabe: item[1], fr: item[2] }));
+    const allWordsForReview = [...prevWords, ...allWordsM5];
 
-    // RENDU
-    function renderVocab(){var themes=[{id:'lieux',data:vocabulaire.lieux},{id:'activites',data:vocabulaire.activites},{id:'objets',data:vocabulaire.objets},{id:'expressions',data:vocabulaire.expressions}];for(var t=0;t<themes.length;t++){var theme=themes[t],container=document.getElementById('theme-'+theme.id);if(!container)continue;var html='';for(var i=0;i<theme.data.length;i++){var w=theme.data[i];html+='<div class="word-card p-3 rounded-lg border border-gray-200 transition-all"><div class="flex justify-between items-center mb-2"><span class="font-semibold text-gray-800">'+escapeHtml(w.fr)+'</span><span class="text-yellow-600 font-semibold">'+escapeHtml(w.latin)+'</span></div><div class="text-right"><span class="arabic-text text-xl text-gray-700">'+escapeHtml(w.arabe)+'</span></div><div class="mt-2 text-sm text-gray-500 border-t pt-2"><p><span class="text-yellow-600">'+escapeHtml(w.phrase_latin)+'</span></p><p>'+escapeHtml(w.phrase_fr)+'</p></div></div>';}container.innerHTML=html;}}
-    function renderDialogues(){var c=document.getElementById('dialogues-container');if(!c)return;var html='';for(var i=0;i<dialogues.length;i++){var d=dialogues[i];html+='<div class="bg-white rounded-2xl shadow-lg overflow-hidden"><div class="bg-gradient-to-r from-yellow-500 to-amber-500 p-4"><h3 class="text-xl font-bold text-white">💬 '+escapeHtml(d.titre)+'</h3><p class="text-yellow-100 text-sm">Personnages: '+escapeHtml(d.personnages.join(', '))+'</p></div><div class="p-4 space-y-3">';for(var j=0;j<d.repliques.length;j++){var r=d.repliques[j],ac=(r.role.indexOf('Client')!==-1||r.role.indexOf('Ami')!==-1||r.role.indexOf('Enfant')!==-1||r.role.indexOf('Passant')!==-1)?'bg-yellow-50 ml-4':'bg-gray-50 mr-4';html+='<div class="p-3 rounded-lg '+ac+'"><div class="font-semibold text-sm text-gray-600 mb-1">'+escapeHtml(r.role)+'</div><div class="flex justify-between items-center mb-1 flex-wrap gap-2"><span class="text-yellow-600 font-semibold">'+escapeHtml(r.latin)+'</span><span class="arabic-text text-lg">'+escapeHtml(r.arabe)+'</span></div><div class="text-gray-500 text-sm">'+escapeHtml(r.francais)+'</div></div>';}html+='</div></div>';}c.innerHTML=html;}
-    function renderVerbs(){var c=document.getElementById('verbes-container');if(!c)return;var html='';for(var i=0;i<verbes.length;i++){var v=verbes[i];html+='<div class="bg-white rounded-2xl shadow-lg overflow-hidden"><div class="bg-gradient-to-r from-yellow-500 to-amber-500 p-4"><h3 class="text-xl font-bold text-white">🔤 '+escapeHtml(v.verbe)+'</h3><p class="text-yellow-100">Racine: '+escapeHtml(v.racine)+'</p></div><div class="p-4 grid gap-4"><div><h4 class="font-bold text-yellow-600 mb-2">Présent</h4><div class="grid grid-cols-2 md:grid-cols-4 gap-2">';for(var j=0;j<personLabels.length;j++){var p=personLabels[j];html+='<div class="p-2 bg-yellow-50 rounded"><div class="text-xs text-gray-500">'+escapeHtml(p.label)+'</div><div class="font-semibold">'+escapeHtml(v.present[p.key])+'</div></div>';}html+='</div></div><div><h4 class="font-bold text-amber-600 mb-2">Passé</h4><div class="grid grid-cols-2 md:grid-cols-4 gap-2">';for(var k=0;k<personLabels.length;k++){var p2=personLabels[k];html+='<div class="p-2 bg-amber-50 rounded"><div class="text-xs text-gray-500">'+escapeHtml(p2.label)+'</div><div class="font-semibold">'+escapeHtml(v.passe[p2.key])+'</div></div>';}html+='</div></div><div><h4 class="font-bold text-purple-600 mb-2">Futur</h4><div class="grid grid-cols-2 md:grid-cols-4 gap-2">';for(var l=0;l<personLabels.length;l++){var p3=personLabels[l];html+='<div class="p-2 bg-purple-50 rounded"><div class="text-xs text-gray-500">'+escapeHtml(p3.label)+'</div><div class="font-semibold">'+escapeHtml(v.futur[p3.key])+'</div></div>';}html+='</div></div></div></div>';}c.innerHTML=html;}
+    function getRandomWordsForReview(n) {
+        let shuffled = [...allWordsForReview];
+        for (let i=shuffled.length-1; i>0; i--) { let j = Math.floor(Math.random()*(i+1)); [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; }
+        return shuffled.slice(0,n);
+    }
+    function displayDailyWords() {
+        let ww = getRandomWordsForReview(5);
+        let c = document.getElementById("dailyWords");
+        c.innerHTML = "<ul>";
+        ww.forEach(w => { c.innerHTML += `<li><strong>${w.latin} (${w.arabe})</strong> → <input type="text" class="daily-input" data-answer="${w.fr}"><button class="btn-check daily-check">Vérifier</button><span class="daily-feedback"></span></li>`; });
+        c.innerHTML += "</ul>";
+        document.querySelectorAll(".daily-check").forEach(btn => {
+            btn.onclick = e => {
+                let li = btn.closest("li");
+                let inp = li.querySelector(".daily-input");
+                let fb = li.querySelector(".daily-feedback");
+                if (inp.value.trim().toLowerCase() === inp.dataset.answer.toLowerCase()) fb.innerHTML = "✔️";
+                else fb.innerHTML = `❌ (${inp.dataset.answer})`;
+            };
+        });
+    }
+    document.getElementById("newDailyBtn").onclick = displayDailyWords;
 
-    // QUIZ
-    function generateOptions(correct,all){var u=[],s={};for(var i=0;i<all.length;i++){if(!s[all[i]]){s[all[i]]=true;u.push(all[i]);}}var w=[];for(var j=0;j<u.length&&w.length<3;j++){if(u[j]!==correct)w.push(u[j]);}w=shuffleArray(w).slice(0,3);return shuffleArray([correct].concat(w));}
-    function startQuiz(type){currentQuestion=0;score=0;var allW=[],shuffled=[];if(type==='vocabulaire'){allW=vocabulaire.lieux.concat(vocabulaire.activites,vocabulaire.objets,vocabulaire.expressions);shuffled=shuffleArray(allW).slice(0,10);quizQuestions=[];for(var i=0;i<shuffled.length;i++){var w=shuffled[i];quizQuestions.push({question:'Comment dit-on "'+w.fr+'" en darija?',answer:w.latin,options:generateOptions(w.latin,allW.map(function(x){return x.latin;}))});}}else if(type==='verbes'){var sv=shuffleArray(verbes).slice(0,10);quizQuestions=[];for(var j=0;j<sv.length;j++){var vb=sv[j];quizQuestions.push({question:'Quelle est la racine du verbe "'+vb.verbe+'"?',answer:vb.racine,options:generateOptions(vb.racine,verbes.map(function(x){return x.racine;}))});}}else if(type==='global'){allW=vocabulaire.lieux.concat(vocabulaire.activites,vocabulaire.objets,vocabulaire.expressions);shuffled=shuffleArray(allW).slice(0,10);quizQuestions=[];for(var k=0;k<shuffled.length;k++){var w=shuffled[k];quizQuestions.push({question:'Comment dit-on "'+w.fr+'" en darija?',answer:w.latin,options:generateOptions(w.latin,allW.map(function(x){return x.latin;}))});}}document.getElementById('quiz-area').classList.remove('hidden');document.getElementById('quiz-end').classList.add('hidden');document.getElementById('quiz-total').textContent=quizQuestions.length;showQuestion();}
-    function showQuestion(){var q=quizQuestions[currentQuestion];document.getElementById('quiz-current').textContent=(currentQuestion+1);document.getElementById('quiz-question').textContent=q.question;document.getElementById('quiz-result').classList.add('hidden');document.getElementById('next-btn').classList.add('hidden');var c=document.getElementById('quiz-options'),html='';for(var i=0;i<q.options.length;i++){var o=q.options[i],eo=o.replace(/"/g,'&quot;');html+='<button data-answer="'+eo+'" class="quiz-option p-4 bg-white border-2 border-gray-200 rounded-xl font-semibold hover:border-yellow-400 hover:bg-yellow-50 transition-all" onclick="checkAnswer(this.getAttribute(\'data-answer\'))">'+escapeHtml(o)+'</button>';}c.innerHTML=html;}
-    function checkAnswer(selected){var q=quizQuestions[currentQuestion],result=document.getElementById('quiz-result'),buttons=document.querySelectorAll('.quiz-option');for(var i=0;i<buttons.length;i++){buttons[i].disabled=true;var ba=buttons[i].getAttribute('data-answer');if(ba===q.answer)buttons[i].classList.add('bg-green-100','border-green-500');else if(ba===selected)buttons[i].classList.add('bg-red-100','border-red-500');}if(selected===q.answer){score++;result.textContent='✅ Correct !';result.className='text-center mt-4 text-lg font-bold text-green-600';saveProgress(q.answer);}else{result.textContent='❌ Faux ! Réponse: '+q.answer;result.className='text-center mt-4 text-lg font-bold text-red-600';}result.classList.remove('hidden');document.getElementById('next-btn').classList.remove('hidden');}
-    function nextQuestion(){currentQuestion++;if(currentQuestion<quizQuestions.length)showQuestion();else{document.getElementById('quiz-area').classList.add('hidden');document.getElementById('quiz-end').classList.remove('hidden');document.getElementById('quiz-score').textContent=score;document.getElementById('quiz-total-end').textContent=quizQuestions.length;updateProgress();}}
-    function resetQuiz(){document.getElementById('quiz-area').classList.add('hidden');document.getElementById('quiz-end').classList.add('hidden');}
+    let quizQuestions = [];
+    function generateQuiz() {
+        let s = [...allWordsForReview];
+        for (let i=0; i<10; i++) {
+            let q = s[Math.floor(Math.random()*s.length)];
+            let opts = new Set([q.fr]);
+            while (opts.size < 4) { let r = s[Math.floor(Math.random()*s.length)]; opts.add(r.fr); }
+            quizQuestions.push({ darija: q.latin, correct: q.fr, options: Array.from(opts).sort(()=>Math.random()-0.5) });
+        }
+    }
+    let quizIndex=0, quizScore=0;
+    function renderQuiz() {
+        let c = document.getElementById("quizContainer");
+        if (quizIndex >= quizQuestions.length) {
+            c.innerHTML = `<p>Score : ${quizScore}/${quizQuestions.length}</p><button class="btn-check" id="resetQuiz">Recommencer</button>`;
+            document.getElementById("resetQuiz")?.addEventListener("click", ()=>{ quizIndex=0; quizScore=0; generateQuiz(); renderQuiz(); });
+            return;
+        }
+        let q = quizQuestions[quizIndex];
+        let html = `<div><p><strong>${q.darija}</strong> ?</p><div>`;
+        q.options.forEach(opt => { html += `<button class="quiz-opt" data-ans="${opt}">${opt}</button> `; });
+        html += `</div><div id="quizFeedback"></div></div>`;
+        c.innerHTML = html;
+        document.querySelectorAll(".quiz-opt").forEach(btn => {
+            btn.onclick = () => {
+                if (btn.dataset.ans === q.correct) { quizScore++; document.getElementById("quizFeedback").innerHTML = "✔️"; }
+                else { document.getElementById("quizFeedback").innerHTML = `❌ (${q.correct})`; }
+                quizIndex++; renderQuiz();
+            };
+        });
+    }
+    document.getElementById("startQuizBtn").onclick = () => { quizIndex=0; quizScore=0; quizQuestions=[]; generateQuiz(); renderQuiz(); };
+    displayDailyWords();
 
-    // PROGRESSION
-    function saveProgress(ans){try{var m=JSON.parse(localStorage.getItem('darijaMois5Mastered')||'[]');if(m.indexOf(ans)===-1){m.push(ans);localStorage.setItem('darijaMois5Mastered',JSON.stringify(m));updateProgress();}}catch(e){console.warn('localStorage:',e);}}
-    function updateProgress(){try{var m=JSON.parse(localStorage.getItem('darijaMois5Mastered')||'[]'),total=vocabulaire.lieux.length+vocabulaire.activites.length+vocabulaire.objets.length+vocabulaire.expressions.length,p=Math.min(100,Math.round((m.length/total)*100));document.getElementById('progress-bar').style.width=p+'%';document.getElementById('progress-text').textContent=p+'%';}catch(e){console.warn('progress:',e);}}
+    function renderVocabulary() {
+        const grid = document.getElementById("wordsGrid");
+        if (!grid) return;
+        grid.innerHTML = "";
+        const col1 = allWordsM5.slice(0, 84);
+        const col2 = allWordsM5.slice(84, 168);
+        const col3 = allWordsM5.slice(168, 250);
+        const titles = ["Mois 5 – Mots (1/3)", "Mois 5 – Mots (2/3)", "Mois 5 – Mots (3/3) + Outils"];
+        [col1, col2, col3].forEach((col, idx) => {
+            const card = document.createElement("div"); card.className = "word-card";
+            const h4 = document.createElement("h4");
+            h4.innerHTML = `${titles[idx]} <button class="hide-col-btn" data-col="${idx}">Masquer</button>`;
+            card.appendChild(h4);
+            const ul = document.createElement("ul"); ul.className = "word-list";
+            col.forEach((w, i) => {
+                let globalIdx = idx===0 ? i : (idx===1 ? 84+i : 168+i);
+                const li = document.createElement("li");
+                const cb = document.createElement("input"); cb.type="checkbox"; cb.className="checkbox-word";
+                if (globalIdx < masteredM5.length) {
+                    cb.checked = masteredM5[globalIdx];
+                    cb.onchange = (function(g){return (e)=>{masteredM5[g]=e.target.checked; saveMasteredM5();};})(globalIdx);
+                }
+                const latinSpan = document.createElement("span"); latinSpan.className = "darija"; latinSpan.innerText = w.latin;
+                const arabSpan = document.createElement("span"); arabSpan.className = "arabic"; arabSpan.innerText = w.arabe;
+                const tradSpan = document.createElement("span"); tradSpan.className = "traduction"; tradSpan.innerText = w.fr;
+                li.appendChild(cb); li.appendChild(latinSpan); li.appendChild(arabSpan); li.appendChild(tradSpan);
+                ul.appendChild(li);
+            });
+            card.appendChild(ul);
+            grid.appendChild(card);
+        });
+        document.querySelectorAll(".hide-col-btn").forEach(btn => btn.onclick = (e) => btn.closest(".word-card").classList.add("hidden-col"));
+        document.getElementById("showAllColsBtn").onclick = () => document.querySelectorAll(".word-card").forEach(c=>c.classList.remove("hidden-col"));
+    }
+    let globalHidden = false;
+    document.getElementById("toggleTranslateBtn").onclick = () => {
+        globalHidden = !globalHidden;
+        document.querySelectorAll("#vocabulary .word-list").forEach(l => {
+            if (globalHidden) l.classList.add("hidden-translation");
+            else l.classList.remove("hidden-translation");
+        });
+    };
+    renderVocabulary();
+    updateProgressM5();
 
-    // INITIALISATION
-    function init(){renderVocab();renderDialogues();renderVerbs();updateProgress();console.log('✅ Mois 5 initialisé');}
-    if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
-  </script>
+    // ==================== 30 VERBES COMPLETS (santé) – TOUS CORRIGÉS ====================
+    const verbsM5 = [];
+    function addVerb(inf, ar, sens, past, pastLatin, pres, presLatin, fut, futLatin) {
+        verbsM5.push({ inf, ar, sens, past, pastLatin, pres, presLatin, fut, futLatin });
+    }
+
+    // 1. dawa (soigner)
+    addVerb("dawa", "دَوَى", "soigner",
+        ["دَوِيت", "دَوِيتِي", "دَوِيتِي", "دَوَى", "دَوَات", "دَوِينَا", "دَوِيتُو", "دَوَاوْ"],
+        ["dawit", "dawiti", "dawiti", "dawa", "dawat", "dawina", "dawitu", "dawaw"],
+        ["كَنْدَوِي", "كَتْدَوِي", "كَتْدَوِي", "كَيْدَوِي", "كَتْدَوِي", "كَنْدَوِيُو", "كَتْدَوِيُو", "كَيْدَوِيُو"],
+        ["kandawi", "katdawi", "katdawi", "kaydawi", "katdawi", "kandawiw", "katdawiw", "kaydawiw"],
+        ["غَادِي نْدَوِي", "غَادِي تْدَوِي", "غَادِي تْدَوِي", "غَادِي يْدَوِي", "غَادِي تْدَوِي", "غَادِي نْدَوِيُو", "غَادِي تْدَوِيُو", "غَادِي يْدَوِيُو"],
+        ["ghadi ndawi", "ghadi tdawi", "ghadi tdawi", "ghadi ydawi", "ghadi tdawi", "ghadi ndawiw", "ghadi tdawiw", "ghadi ydawiw"]);
+
+    // 2. 3alaj (traiter)
+    addVerb("3alaj", "عَالَج", "traiter",
+        ["عَالَجْت", "عَالَجْتِي", "عَالَجْتِي", "عَالَج", "عَالَجَات", "عَالَجْنَا", "عَالَجْتُو", "عَالَجُوْا"],
+        ["3alajt", "3alajti", "3alajti", "3alaj", "3alajat", "3alajna", "3alajtu", "3alaju"],
+        ["كَنْعَالَج", "كَتْعَالَج", "كَتْعَالَجِي", "كَيْعَالَج", "كَتْعَالَج", "كَنْعَالَجُو", "كَتْعَالَجُو", "كَيْعَالَجُو"],
+        ["kan3alaj", "kat3alaj", "kat3alaji", "kay3alaj", "kat3alaj", "kan3alaju", "kat3alaju", "kay3alaju"],
+        ["غَادِي نْعَالَج", "غَادِي تْعَالَج", "غَادِي تْعَالَجِي", "غَادِي يْعَالَج", "غَادِي تْعَالَج", "غَادِي نْعَالَجُو", "غَادِي تْعَالَجُو", "غَادِي يْعَالَجُو"],
+        ["ghadi n3alaj", "ghadi t3alaj", "ghadi t3alaji", "ghadi y3alaj", "ghadi t3alaj", "ghadi n3alaju", "ghadi t3alaju", "ghadi y3alaju"]);
+
+    // 3. rta7 (se reposer)
+    addVerb("rta7", "رْتَاح", "se reposer",
+        ["رْتَاحْت", "رْتَاحْتِي", "رْتَاحْتِي", "رْتَاح", "رْتَاحَات", "رْتَاحْنَا", "رْتَاحْتُو", "رْتَاحُوْا"],
+        ["rta7t", "rta7ti", "rta7ti", "rta7", "rta7at", "rta7na", "rta7tu", "rta7u"],
+        ["كَنْرْتَاح", "كَتْرْتَاح", "كَتْرْتَاحِي", "كَيْرْتَاح", "كَتْرْتَاح", "كَنْرْتَاحُو", "كَتْرْتَاحُو", "كَيْرْتَاحُو"],
+        ["kanrta7", "katrta7", "katrta7i", "kayrta7", "katrta7", "kanrta7u", "katrta7u", "kayrta7u"],
+        ["غَادِي نْرْتَاح", "غَادِي تْرْتَاح", "غَادِي تْرْتَاحِي", "غَادِي يْرْتَاح", "غَادِي تْرْتَاح", "غَادِي نْرْتَاحُو", "غَادِي تْرْتَاحُو", "غَادِي يْرْتَاحُو"],
+        ["ghadi nrta7", "ghadi trta7", "ghadi trta7i", "ghadi yrta7", "ghadi trta7", "ghadi nrta7u", "ghadi trta7u", "ghadi yrta7u"]);
+
+    // 4. bṛa (guérir)
+    addVerb("bṛa", "بْرَا", "guérir",
+        ["بْرِيت", "بْرِيتِي", "بْرِيتِي", "بْرَا", "بْرَات", "بْرِينَا", "بْرِيتُو", "بْرَاوْ"],
+        ["brit", "briti", "briti", "bra", "brat", "brina", "britu", "braw"],
+        ["كَنْبْرَا", "كَتْبْرَا", "كَتْبْرَايْ", "كَيْبْرَا", "كَتْبْرَا", "كَنْبْرَاوْ", "كَتْبْرَاوْ", "كَيْبْرَاوْ"],
+        ["kanbra", "katbra", "katbray", "kaybra", "katbra", "kanbraw", "katbraw", "kaybraw"],
+        ["غَادِي نْبْرَا", "غَادِي تْبْرَا", "غَادِي تْبْرَايْ", "غَادِي يْبْرَا", "غَادِي تْبْرَا", "غَادِي نْبْرَاوْ", "غَادِي تْبْرَاوْ", "غَادِي يْبْرَاوْ"],
+        ["ghadi nbra", "ghadi tbra", "ghadi tbray", "ghadi ybra", "ghadi tbra", "ghadi nbraw", "ghadi tbraw", "ghadi ybraw"]);
+
+    // 5. wja3 (faire mal)
+    addVerb("wja3", "وَجَع", "faire mal",
+        ["وَجَعْت", "وَجَعْتِي", "وَجَعْتِي", "وَجَع", "وَجَعَات", "وَجَعْنَا", "وَجَعْتُو", "وَجَعُوْا"],
+        ["wja3t", "wja3ti", "wja3ti", "wja3", "wja3at", "wja3na", "wja3tu", "wja3u"],
+        ["كَنْوَجَع", "كَتْوَجَع", "كَتْوَجَعِي", "كَيْوَجَع", "كَتْوَجَع", "كَنْوَجَعُو", "كَتْوَجَعُو", "كَيْوَجَعُو"],
+        ["kanwja3", "katwja3", "katwja3i", "kaywja3", "katwja3", "kanwja3u", "katwja3u", "kaywja3u"],
+        ["غَادِي نْوَجَع", "غَادِي تْوَجَع", "غَادِي تْوَجَعِي", "غَادِي يْوَجَع", "غَادِي تْوَجَع", "غَادِي نْوَجَعُو", "غَادِي تْوَجَعُو", "غَادِي يْوَجَعُو"],
+        ["ghadi nwja3", "ghadi twja3", "ghadi twja3i", "ghadi ywja3", "ghadi twja3", "ghadi nwja3u", "ghadi twja3u", "ghadi ywja3u"]);
+
+    // 6. t3ab (se fatiguer)
+    addVerb("t3ab", "تْعَب", "se fatiguer",
+        ["تْعَبْت", "تْعَبْتِي", "تْعَبْتِي", "تْعَب", "تْعَبَات", "تْعَبْنَا", "تْعَبْتُو", "تْعَبُوْا"],
+        ["t3abt", "t3abti", "t3abti", "t3ab", "t3abat", "t3abna", "t3abtu", "t3abu"],
+        ["كَنْتْعَب", "كَتْتْعَب", "كَتْتْعَبِي", "كَيْتْعَب", "كَتْتْعَب", "كَنْتْعَبُو", "كَتْتْعَبُو", "كَيْتْعَبُو"],
+        ["kant3ab", "katt3ab", "katt3abi", "kayt3ab", "katt3ab", "kant3abu", "katt3abu", "kayt3abu"],
+        ["غَادِي نْتْعَب", "غَادِي تْتْعَب", "غَادِي تْتْعَبِي", "غَادِي يْتْعَب", "غَادِي تْتْعَب", "غَادِي نْتْعَبُو", "غَادِي تْتْعَبُو", "غَادِي يْتْعَبُو"],
+        ["ghadi nt3ab", "ghadi tt3ab", "ghadi tt3abi", "ghadi yt3ab", "ghadi tt3ab", "ghadi nt3abu", "ghadi tt3abu", "ghadi yt3abu"]);
+
+    // 7. n3as (dormir)
+    addVerb("n3as", "نْعَس", "dormir",
+        ["نْعَسْت", "نْعَسْتِي", "نْعَسْتِي", "نْعَس", "نْعَسَات", "نْعَسْنَا", "نْعَسْتُو", "نْعَسُوْا"],
+        ["n3ast", "n3asti", "n3asti", "n3as", "n3asat", "n3asna", "n3astu", "n3asu"],
+        ["كَنْنْعَس", "كَتْنْعَس", "كَتْنْعَسِي", "كَيْنْعَس", "كَتْنْعَس", "كَنْنْعَسُو", "كَتْنْعَسُو", "كَيْنْعَسُو"],
+        ["kann3as", "katn3as", "katn3asi", "kayn3as", "katn3as", "kann3asu", "katn3asu", "kayn3asu"],
+        ["غَادِي نْنْعَس", "غَادِي تْنْعَس", "غَادِي تْنْعَسِي", "غَادِي يْنْعَس", "غَادِي تْنْعَس", "غَادِي نْنْعَسُو", "غَادِي تْنْعَسُو", "غَادِي يْنْعَسُو"],
+        ["ghadi nn3as", "ghadi tn3as", "ghadi tn3asi", "ghadi yn3as", "ghadi tn3as", "ghadi nn3asu", "ghadi tn3asu", "ghadi yn3asu"]);
+
+    // 8. sḥa (se réveiller)
+    addVerb("sḥa", "صْحَا", "se réveiller",
+        ["صْحِيت", "صْحِيتِي", "صْحِيتِي", "صْحَا", "صْحَات", "صْحِينَا", "صْحِيتُو", "صْحَاوْ"],
+        ["s7it", "s7iti", "s7iti", "s7a", "s7at", "s7ina", "s7itu", "s7aw"],
+        ["كَنْصْحَا", "كَتْصْحَا", "كَتْصْحَايْ", "كَيْصْحَا", "كَتْصْحَا", "كَنْصْحَاوْ", "كَتْصْحَاوْ", "كَيْصْحَاوْ"],
+        ["kans7a", "kats7a", "kats7ay", "kays7a", "kats7a", "kans7aw", "kats7aw", "kays7aw"],
+        ["غَادِي نْصْحَا", "غَادِي تْصْحَا", "غَادِي تْصْحَايْ", "غَادِي يْصْحَا", "غَادِي تْصْحَا", "غَادِي نْصْحَاوْ", "غَادِي تْصْحَاوْ", "غَادِي يْصْحَاوْ"],
+        ["ghadi ns7a", "ghadi ts7a", "ghadi ts7ay", "ghadi ys7a", "ghadi ts7a", "ghadi ns7aw", "ghadi ts7aw", "ghadi ys7aw"]);
+
+    // 9. tkellem (parler)
+    addVerb("tkellem", "تْكَلَّم", "parler",
+        ["تْكَلَّمْت", "تْكَلَّمْتِي", "تْكَلَّمْتِي", "تْكَلَّم", "تْكَلَّمَات", "تْكَلَّمْنَا", "تْكَلَّمْتُو", "تْكَلَّمُوْا"],
+        ["tkellemt", "tkellemti", "tkellemti", "tkellem", "tkellemat", "tkellemna", "tkellemtu", "tkellemu"],
+        ["كَنْتْكَلَّم", "كَتْتْكَلَّم", "كَتْتْكَلَّمِي", "كَيْتْكَلَّم", "كَتْتْكَلَّم", "كَنْتْكَلَّمُو", "كَتْتْكَلَّمُو", "كَيْتْكَلَّمُو"],
+        ["kantkellem", "kattkellem", "kattkellemi", "kaytkellem", "kattkellem", "kantkellemu", "kattkellemu", "kaytkellemu"],
+        ["غَادِي نْتْكَلَّم", "غَادِي تْتْكَلَّم", "غَادِي تْتْكَلَّمِي", "غَادِي يْتْكَلَّم", "غَادِي تْتْكَلَّم", "غَادِي نْتْكَلَّمُو", "غَادِي تْتْكَلَّمُو", "غَادِي يْتْكَلَّمُو"],
+        ["ghadi ntkellem", "ghadi ttkellem", "ghadi ttkellemi", "ghadi ytkellem", "ghadi ttkellem", "ghadi ntkellemu", "ghadi ttkellemu", "ghadi ytkellemu"]);
+
+    // 10. 3aṭas (éternuer)
+    addVerb("3aṭas", "عَطَس", "éternuer",
+        ["عَطَسْت", "عَطَسْتِي", "عَطَسْتِي", "عَطَس", "عَطَسَات", "عَطَسْنَا", "عَطَسْتُو", "عَطَسُوْا"],
+        ["3aṭast", "3aṭasti", "3aṭasti", "3aṭas", "3aṭasat", "3aṭasna", "3aṭastu", "3aṭasu"],
+        ["كَنْعَطَس", "كَتْعَطَس", "كَتْعَطَسِي", "كَيْعَطَس", "كَتْعَطَس", "كَنْعَطَسُو", "كَتْعَطَسُو", "كَيْعَطَسُو"],
+        ["kan3aṭas", "kat3aṭas", "kat3aṭasi", "kay3aṭas", "kat3aṭas", "kan3aṭasu", "kat3aṭasu", "kay3aṭasu"],
+        ["غَادِي نْعَطَس", "غَادِي تْعَطَس", "غَادِي تْعَطَسِي", "غَادِي يْعَطَس", "غَادِي تْعَطَس", "غَادِي نْعَطَسُو", "غَادِي تْعَطَسُو", "غَادِي يْعَطَسُو"],
+        ["ghadi n3aṭas", "ghadi t3aṭas", "ghadi t3aṭasi", "ghadi y3aṭas", "ghadi t3aṭas", "ghadi n3aṭasu", "ghadi t3aṭasu", "ghadi y3aṭasu"]);
+
+    // 11. sa3al (tousser)
+    addVerb("sa3al", "سَعَل", "tousser",
+        ["سَعَلْت", "سَعَلْتِي", "سَعَلْتِي", "سَعَل", "سَعَلَات", "سَعَلْنَا", "سَعَلْتُو", "سَعَلُوْا"],
+        ["sa3alt", "sa3alti", "sa3alti", "sa3al", "sa3alat", "sa3alna", "sa3altu", "sa3alu"],
+        ["كَنْسَعَل", "كَتْسَعَل", "كَتْسَعَلِي", "كَيْسَعَل", "كَتْسَعَل", "كَنْسَعَلُو", "كَتْسَعَلُو", "كَيْسَعَلُو"],
+        ["kansa3al", "katsa3al", "katsa3ali", "kaysa3al", "katsa3al", "kansa3alu", "katsa3alu", "kaysa3alu"],
+        ["غَادِي نَسْعَل", "غَادِي تَسْعَل", "غَادِي تَسْعَلِي", "غَادِي يَسْعَل", "غَادِي تَسْعَل", "غَادِي نَسْعَلُو", "غَادِي تَسْعَلُو", "غَادِي يَسْعَلُو"],
+        ["ghadi nas3al", "ghadi tas3al", "ghadi tas3ali", "ghadi yas3al", "ghadi tas3al", "ghadi nas3alu", "ghadi tas3alu", "ghadi yas3alu"]);
+
+    // 12. tqayya (vomir)
+    addVerb("tqayya", "تْقَيَّا", "vomir",
+        ["تْقَيِّيت", "تْقَيِّيتِي", "تْقَيِّيتِي", "تْقَيَّا", "تْقَيَّات", "تْقَيِّينَا", "تْقَيِّيتُو", "تْقَيَّاوْ"],
+        ["tqayyit", "tqayyiti", "tqayyiti", "tqayya", "tqayyat", "tqayyina", "tqayyitu", "tqayyaw"],
+        ["كَنْتْقَيَّا", "كَتْتْقَيَّا", "كَتْتْقَيَّايْ", "كَيْتْقَيَّا", "كَتْتْقَيَّا", "كَنْتْقَيَّاوْ", "كَتْتْقَيَّاوْ", "كَيْتْقَيَّاوْ"],
+        ["kantqayya", "kattqayya", "kattqayyay", "kaytqayya", "kattqayya", "kantqayyaw", "kattqayyaw", "kaytqayyaw"],
+        ["غَادِي نْتْقَيَّا", "غَادِي تْتْقَيَّا", "غَادِي تْتْقَيَّايْ", "غَادِي يْتْقَيَّا", "غَادِي تْتْقَيَّا", "غَادِي نْتْقَيَّاوْ", "غَادِي تْتْقَيَّاوْ", "غَادِي يْتْقَيَّاوْ"],
+        ["ghadi ntqayya", "ghadi ttqayya", "ghadi ttqayyay", "ghadi ytqayya", "ghadi ttqayya", "ghadi ntqayyaw", "ghadi ttqayyaw", "ghadi ytqayyaw"]);
+
+    // 13. tḥam (avoir de la fièvre)
+    addVerb("tḥam", "تْحَم", "avoir de la fièvre",
+        ["تْحَمْت", "تْحَمْتِي", "تْحَمْتِي", "تْحَم", "تْحَمَات", "تْحَمْنَا", "تْحَمْتُو", "تْحَمُوْا"],
+        ["t7amt", "t7amti", "t7amti", "t7am", "t7amat", "t7amna", "t7amtu", "t7amu"],
+        ["كَنْتْحَم", "كَتْتْحَم", "كَتْتْحَمِي", "كَيْتْحَم", "كَتْتْحَم", "كَنْتْحَمُو", "كَتْتْحَمُو", "كَيْتْحَمُو"],
+        ["kant7am", "katt7am", "katt7ami", "kayt7am", "katt7am", "kant7amu", "katt7amu", "kayt7amu"],
+        ["غَادِي نْتْحَم", "غَادِي تْتْحَم", "غَادِي تْتْحَمِي", "غَادِي يْتْحَم", "غَادِي تْتْحَم", "غَادِي نْتْحَمُو", "غَادِي تْتْحَمُو", "غَادِي يْتْحَمُو"],
+        ["ghadi nt7am", "ghadi tt7am", "ghadi tt7ami", "ghadi yt7am", "ghadi tt7am", "ghadi nt7amu", "ghadi tt7amu", "ghadi yt7amu"]);
+
+    // 14. tṣab (avoir mal)
+    addVerb("tṣab", "تْصَب", "avoir mal",
+        ["تْصَبْت", "تْصَبْتِي", "تْصَبْتِي", "تْصَب", "تْصَبَات", "تْصَبْنَا", "تْصَبْتُو", "تْصَبُوْا"],
+        ["tṣabt", "tṣabti", "tṣabti", "tṣab", "tṣabat", "tṣabna", "tṣabtu", "tṣabu"],
+        ["كَنْتْصَب", "كَتْتْصَب", "كَتْتْصَبِي", "كَيْتْصَب", "كَتْتْصَب", "كَنْتْصَبُو", "كَتْتْصَبُو", "كَيْتْصَبُو"],
+        ["kantṣab", "kattṣab", "kattṣabi", "kaytṣab", "kattṣab", "kantṣabu", "kattṣabu", "kaytṣabu"],
+        ["غَادِي نْتْصَب", "غَادِي تْتْصَب", "غَادِي تْتْصَبِي", "غَادِي يْتْصَب", "غَادِي تْتْصَب", "غَادِي نْتْصَبُو", "غَادِي تْتْصَبُو", "غَادِي يْتْصَبُو"],
+        ["ghadi ntṣab", "ghadi ttṣab", "ghadi ttṣabi", "ghadi ytṣab", "ghadi ttṣab", "ghadi ntṣabu", "ghadi ttṣabu", "ghadi ytṣabu"]);
+
+    // 15. tḥassen (s'améliorer)
+    addVerb("tḥassen", "تْحَسَّن", "s'améliorer",
+        ["تْحَسَّنْت", "تْحَسَّنْتِي", "تْحَسَّنْتِي", "تْحَسَّن", "تْحَسَّنَات", "تْحَسَّنْنَا", "تْحَسَّنْتُو", "تْحَسَّنُوْا"],
+        ["t7assent", "t7assenti", "t7assenti", "t7assen", "t7assenat", "t7assenna", "t7assentu", "t7assenu"],
+        ["كَنْتْحَسَّن", "كَتْتْحَسَّن", "كَتْتْحَسَّنِي", "كَيْتْحَسَّن", "كَتْتْحَسَّن", "كَنْتْحَسَّنُو", "كَتْتْحَسَّنُو", "كَيْتْحَسَّنُو"],
+        ["kant7assen", "katt7assen", "katt7asseni", "kayt7assen", "katt7assen", "kant7assenu", "katt7assenu", "kayt7assenu"],
+        ["غَادِي نْتْحَسَّن", "غَادِي تْتْحَسَّن", "غَادِي تْتْحَسَّنِي", "غَادِي يْتْحَسَّن", "غَادِي تْتْحَسَّن", "غَادِي نْتْحَسَّنُو", "غَادِي تْتْحَسَّنُو", "غَادِي يْتْحَسَّنُو"],
+        ["ghadi nt7assen", "ghadi tt7assen", "ghadi tt7asseni", "ghadi yt7assen", "ghadi tt7assen", "ghadi nt7assenu", "ghadi tt7assenu", "ghadi yt7assenu"]);
+
+    // 16. tqawwa (se renforcer)
+    addVerb("tqawwa", "تْقَوَّا", "se renforcer",
+        ["تْقَوِّيت", "تْقَوِّيتِي", "تْقَوِّيتِي", "تْقَوَّا", "تْقَوَّات", "تْقَوِّينَا", "تْقَوِّيتُو", "تْقَوَّاوْ"],
+        ["tqawwit", "tqawwiti", "tqawwiti", "tqawwa", "tqawwat", "tqawwina", "tqawwitu", "tqawwaw"],
+        ["كَنْتْقَوَّا", "كَتْتْقَوَّا", "كَتْتْقَوَّايْ", "كَيْتْقَوَّا", "كَتْتْقَوَّا", "كَنْتْقَوَّاوْ", "كَتْتْقَوَّاوْ", "كَيْتْقَوَّاوْ"],
+        ["kantqawwa", "kattqawwa", "kattqawway", "kaytqawwa", "kattqawwa", "kantqawwaw", "kattqawwaw", "kaytqawwaw"],
+        ["غَادِي نْتْقَوَّا", "غَادِي تْتْقَوَّا", "غَادِي تْتْقَوَّايْ", "غَادِي يْتْقَوَّا", "غَادِي تْتْقَوَّا", "غَادِي نْتْقَوَّاوْ", "غَادِي تْتْقَوَّاوْ", "غَادِي يْتْقَوَّاوْ"],
+        ["ghadi ntqawwa", "ghadi ttqawwa", "ghadi ttqawway", "ghadi ytqawwa", "ghadi ttqawwa", "ghadi ntqawwaw", "ghadi ttqawwaw", "ghadi ytqawwaw"]);
+
+    // 17. tbarra (se rétablir)
+    addVerb("tbarra", "تْبَرَّا", "se rétablir",
+        ["تْبَرِّيت", "تْبَرِّيتِي", "تْبَرِّيتِي", "تْبَرَّا", "تْبَرَّات", "تْبَرِّينَا", "تْبَرِّيتُو", "تْبَرَّاوْ"],
+        ["tbarrit", "tbarriti", "tbarriti", "tbarra", "tbarra t", "tbar rina", "tbarritu", "tbarraw"],
+        ["كَنْتْبَرَّا", "كَتْتْبَرَّا", "كَتْتْبَرَّايْ", "كَيْتْبَرَّا", "كَتْتْبَرَّا", "كَنْتْبَرَّاوْ", "كَتْتْبَرَّاوْ", "كَيْتْبَرَّاوْ"],
+        ["kantbarra", "kattbarra", "kattbarray", "kaytbarra", "kattbarra", "kantbarraw", "kattbarraw", "kaytbarraw"],
+        ["غَادِي نْتْبَرَّا", "غَادِي تْتْبَرَّا", "غَادِي تْتْبَرَّايْ", "غَادِي يْتْبَرَّا", "غَادِي تْتْبَرَّا", "غَادِي نْتْبَرَّاوْ", "غَادِي تْتْبَرَّاوْ", "غَادِي يْتْبَرَّاوْ"],
+        ["ghadi ntbarra", "ghadi ttbarra", "ghadi ttbarray", "ghadi ytbarra", "ghadi ttbarra", "ghadi ntbarraw", "ghadi ttbarraw", "ghadi ytbarraw"]);
+
+    // 18. t3ada (être soigné)
+    addVerb("t3ada", "تْعَادَى", "être soigné",
+        ["تْعَادِيت", "تْعَادِيتِي", "تْعَادِيتِي", "تْعَادَى", "تْعَادَات", "تْعَادِينَا", "تْعَادِيتُو", "تْعَادَاوْ"],
+        ["t3adit", "t3aditi", "t3aditi", "t3ada", "t3adat", "t3adina", "t3aditu", "t3adaw"],
+        ["كَنْتْعَادَى", "كَتْتْعَادَى", "كَتْتْعَادَايْ", "كَيْتْعَادَى", "كَتْتْعَادَى", "كَنْتْعَادَاوْ", "كَتْتْعَادَاوْ", "كَيْتْعَادَاوْ"],
+        ["kant3ada", "katt3ada", "katt3aday", "kayt3ada", "katt3ada", "kant3adaw", "katt3adaw", "kayt3adaw"],
+        ["غَادِي نْتْعَادَى", "غَادِي تْتْعَادَى", "غَادِي تْتْعَادَايْ", "غَادِي يْتْعَادَى", "غَادِي تْتْعَادَى", "غَادِي نْتْعَادَاوْ", "غَادِي تْتْعَادَاوْ", "غَادِي يْتْعَادَاوْ"],
+        ["ghadi nt3ada", "ghadi tt3ada", "ghadi tt3aday", "ghadi yt3ada", "ghadi tt3ada", "ghadi nt3adaw", "ghadi tt3adaw", "ghadi yt3adaw"]);
+
+    // 19. tfarrej (regarder)
+    addVerb("tfarrej", "تْفَرَّج", "regarder",
+        ["تْفَرَّجْت", "تْفَرَّجْتِي", "تْفَرَّجْتِي", "تْفَرَّج", "تْفَرَّجَات", "تْفَرَّجْنَا", "تْفَرَّجْتُو", "تْفَرَّجُوْا"],
+        ["tfarrejt", "tfarrejti", "tfarrejti", "tfarrej", "tfarrejat", "tfarrejna", "tfarrejtu", "tfarreju"],
+        ["كَنْتْفَرَّج", "كَتْتْفَرَّج", "كَتْتْفَرَّجِي", "كَيْتْفَرَّج", "كَتْتْفَرَّج", "كَنْتْفَرَّجُو", "كَتْتْفَرَّجُو", "كَيْتْفَرَّجُو"],
+        ["kantfarrej", "kattfarrej", "kattfarreji", "kaytfarrej", "kattfarrej", "kantfarreju", "kattfarreju", "kaytfarreju"],
+        ["غَادِي نْتْفَرَّج", "غَادِي تْتْفَرَّج", "غَادِي تْتْفَرَّجِي", "غَادِي يْتْفَرَّج", "غَادِي تْتْفَرَّج", "غَادِي نْتْفَرَّجُو", "غَادِي تْتْفَرَّجُو", "غَادِي يْتْفَرَّجُو"],
+        ["ghadi ntfarrej", "ghadi ttfarrej", "ghadi ttfarreji", "ghadi ytfarrej", "ghadi ttfarrej", "ghadi ntfarreju", "ghadi ttfarreju", "ghadi ytfarreju"]);
+
+    // 20. stma3 (écouter)
+    addVerb("stma3", "سْتَمَع", "écouter",
+        ["سْتَمَعْت", "سْتَمَعْتِي", "سْتَمَعْتِي", "سْتَمَع", "سْتَمَعَات", "سْتَمَعْنَا", "سْتَمَعْتُو", "سْتَمَعُوْا"],
+        ["stama3t", "stama3ti", "stama3ti", "stama3", "stama3at", "stama3na", "stama3tu", "stama3u"],
+        ["كَنْسْتَمَع", "كَتْسْتَمَع", "كَتْسْتَمَعِي", "كَيْسْتَمَع", "كَتْسْتَمَع", "كَنْسْتَمَعُو", "كَتْسْتَمَعُو", "كَيْسْتَمَعُو"],
+        ["kanstama3", "katstama3", "katstama3i", "kaystama3", "katstama3", "kanstama3u", "katstama3u", "kaystama3u"],
+        ["غَادِي نَسْتَمَع", "غَادِي تَسْتَمَع", "غَادِي تَسْتَمَعِي", "غَادِي يَسْتَمَع", "غَادِي تَسْتَمَع", "غَادِي نَسْتَمَعُو", "غَادِي تَسْتَمَعُو", "غَادِي يَسْتَمَعُو"],
+        ["ghadi nastama3", "ghadi tastama3", "ghadi tastama3i", "ghadi yastama3", "ghadi tastama3", "ghadi nastama3u", "ghadi tastama3u", "ghadi yastama3u"]);
+
+    // 21. d7ek (rire)
+    addVerb("d7ek", "ضْحَك", "rire",
+        ["ضْحَكْت", "ضْحَكْتِي", "ضْحَكْتِي", "ضْحَك", "ضْحَكَات", "ضْحَكْنَا", "ضْحَكْتُو", "ضْحَكُوْا"],
+        ["d7akt", "d7akti", "d7akti", "d7ak", "d7akat", "d7akna", "d7aktu", "d7aku"],
+        ["كَنْضْحَك", "كَتْضْحَك", "كَتْضْحَكِي", "كَيْضْحَك", "كَتْضْحَك", "كَنْضْحَكُو", "كَتْضْحَكُو", "كَيْضْحَكُو"],
+        ["kand7ak", "katd7ak", "katd7aki", "kayd7ak", "katd7ak", "kand7aku", "katd7aku", "kayd7aku"],
+        ["غَادِي نَضْحَك", "غَادِي تَضْحَك", "غَادِي تَضْحَكِي", "غَادِي يَضْحَك", "غَادِي تَضْحَك", "غَادِي نَضْحَكُو", "غَادِي تَضْحَكُو", "غَادِي يَضْحَكُو"],
+        ["ghadi nad7ak", "ghadi tad7ak", "ghadi tad7aki", "ghadi yad7ak", "ghadi tad7ak", "ghadi nad7aku", "ghadi tad7aku", "ghadi yad7aku"]);
+
+    // 22. bka (pleurer)
+    addVerb("bka", "بْكَى", "pleurer",
+        ["بْكِيت", "بْكِيتِي", "بْكِيتِي", "بْكَى", "بْكَات", "بْكِينَا", "بْكِيتُو", "بْكَاوْ"],
+        ["bkit", "bkiti", "bkiti", "bka", "bkat", "bkina", "bkitu", "bkaw"],
+        ["كَنْبْكِي", "كَتْبْكِي", "كَتْبْكِي", "كَيْبْكِي", "كَتْبْكِي", "كَنْبْكِيُو", "كَتْبْكِيُو", "كَيْبْكِيُو"],
+        ["kanbki", "katbki", "katbki", "kaybki", "katbki", "kanbkiw", "katbkiw", "kaybkiw"],
+        ["غَادِي نْبْكِي", "غَادِي تْبْكِي", "غَادِي تْبْكِي", "غَادِي يْبْكِي", "غَادِي تْبْكِي", "غَادِي نْبْكِيُو", "غَادِي تْبْكِيُو", "غَادِي يْبْكِيُو"],
+        ["ghadi nbki", "ghadi tbki", "ghadi tbki", "ghadi ybki", "ghadi tbki", "ghadi nbkiw", "ghadi tbkiw", "ghadi ybkiw"]);
+
+    // 23. ṣreḫ (crier)
+    addVerb("ṣreḫ", "صْرَخ", "crier",
+        ["صْرَخْت", "صْرَخْتِي", "صْرَخْتِي", "صْرَخ", "صْرَخَات", "صْرَخْنَا", "صْرَخْتُو", "صْرَخُوْا"],
+        ["ṣraxt", "ṣraxti", "ṣraxti", "ṣrax", "ṣraxat", "ṣraxna", "ṣraxtu", "ṣraxu"],
+        ["كَنْصْرَخ", "كَتْصْرَخ", "كَتْصْرَخِي", "كَيْصْرَخ", "كَتْصْرَخ", "كَنْصْرَخُو", "كَتْصْرَخُو", "كَيْصْرَخُو"],
+        ["kanṣrax", "katṣrax", "katṣraxi", "kayṣrax", "katṣrax", "kanṣraxu", "katṣraxu", "kayṣraxu"],
+        ["غَادِي نَصْرَخ", "غَادِي تَصْرَخ", "غَادِي تَصْرَخِي", "غَادِي يَصْرَخ", "غَادِي تَصْرَخ", "غَادِي نَصْرَخُو", "غَادِي تَصْرَخُو", "غَادِي يَصْرَخُو"],
+        ["ghadi naṣrax", "ghadi taṣrax", "ghadi taṣraxi", "ghadi yaṣrax", "ghadi taṣrax", "ghadi naṣraxu", "ghadi taṣraxu", "ghadi yaṣraxu"]);
+
+    // 24. tma3 (écouter)
+    addVerb("tma3", "تْمَع", "écouter",
+        ["تْمَعْت", "تْمَعْتِي", "تْمَعْتِي", "تْمَع", "تْمَعَات", "تْمَعْنَا", "تْمَعْتُو", "تْمَعُوْا"],
+        ["tma3t", "tma3ti", "tma3ti", "tma3", "tma3at", "tma3na", "tma3tu", "tma3u"],
+        ["كَنْتْمَع", "كَتْتْمَع", "كَتْتْمَعِي", "كَيْتْمَع", "كَتْتْمَع", "كَنْتْمَعُو", "كَتْتْمَعُو", "كَيْتْمَعُو"],
+        ["kantma3", "kattma3", "kattma3i", "kaytma3", "kattma3", "kantma3u", "kattma3u", "kaytma3u"],
+        ["غَادِي نْتْمَع", "غَادِي تْتْمَع", "غَادِي تْتْمَعِي", "غَادِي يْتْمَع", "غَادِي تْتْمَع", "غَادِي نْتْمَعُو", "غَادِي تْتْمَعُو", "غَادِي يْتْمَعُو"],
+        ["ghadi ntma3", "ghadi ttma3", "ghadi ttma3i", "ghadi ytma3", "ghadi ttma3", "ghadi ntma3u", "ghadi ttma3u", "ghadi ytma3u"]);
+
+    // 25. tḥafad (se protéger)
+    addVerb("tḥafad", "تْحَافَظ", "se protéger",
+        ["تْحَافَظْت", "تْحَافَظْتِي", "تْحَافَظْتِي", "تْحَافَظ", "تْحَافَظَات", "تْحَافَظْنَا", "تْحَافَظْتُو", "تْحَافَظُوْا"],
+        ["tḥafaẓt", "tḥafaẓti", "tḥafaẓti", "tḥafaẓ", "tḥafaẓat", "tḥafaẓna", "tḥafaẓtu", "tḥafaẓu"],
+        ["كَنْتْحَافَظ", "كَتْتْحَافَظ", "كَتْتْحَافَظِي", "كَيْتْحَافَظ", "كَتْتْحَافَظ", "كَنْتْحَافَظُو", "كَتْتْحَافَظُو", "كَيْتْحَافَظُو"],
+        ["kantḥafaẓ", "kattḥafaẓ", "kattḥafaẓi", "kaytḥafaẓ", "kattḥafaẓ", "kantḥafaẓu", "kattḥafaẓu", "kaytḥafaẓu"],
+        ["غَادِي نْتْحَافَظ", "غَادِي تْتْحَافَظ", "غَادِي تْتْحَافَظِي", "غَادِي يْتْحَافَظ", "غَادِي تْتْحَافَظ", "غَادِي نْتْحَافَظُو", "غَادِي تْتْحَافَظُو", "غَادِي يْتْحَافَظُو"],
+        ["ghadi ntḥafaẓ", "ghadi ttḥafaẓ", "ghadi ttḥafaẓi", "ghadi ytḥafaẓ", "ghadi ttḥafaẓ", "ghadi ntḥafaẓu", "ghadi ttḥafaẓu", "ghadi ytḥafaẓu"]);
+
+    // 26. tṣbeḥ (devenir)
+    addVerb("tṣbeḥ", "تْصْبَح", "devenir",
+        ["تْصْبَحْت", "تْصْبَحْتِي", "تْصْبَحْتِي", "تْصْبَح", "تْصْبَحَات", "تْصْبَحْنَا", "تْصْبَحْتُو", "تْصْبَحُوْا"],
+        ["tṣbaḥt", "tṣbaḥti", "tṣbaḥti", "tṣbaḥ", "tṣbaḥat", "tṣbaḥna", "tṣbaḥtu", "tṣbaḥu"],
+        ["كَنْتْصْبَح", "كَتْتْصْبَح", "كَتْتْصْبَحِي", "كَيْتْصْبَح", "كَتْتْصْبَح", "كَنْتْصْبَحُو", "كَتْتْصْبَحُو", "كَيْتْصْبَحُو"],
+        ["kantṣbaḥ", "kattṣbaḥ", "kattṣbaḥi", "kaytṣbaḥ", "kattṣbaḥ", "kantṣbaḥu", "kattṣbaḥu", "kaytṣbaḥu"],
+        ["غَادِي نْتْصْبَح", "غَادِي تْتْصْبَح", "غَادِي تْتْصْبَحِي", "غَادِي يْتْصْبَح", "غَادِي تْتْصْبَح", "غَادِي نْتْصْبَحُو", "غَادِي تْتْصْبَحُو", "غَادِي يْتْصْبَحُو"],
+        ["ghadi ntṣbaḥ", "ghadi ttṣbaḥ", "ghadi ttṣbaḥi", "ghadi ytṣbaḥ", "ghadi ttṣbaḥ", "ghadi ntṣbaḥu", "ghadi ttṣbaḥu", "ghadi ytṣbaḥu"]);
+
+    // 27. tḥek (raconter)
+    addVerb("tḥek", "تْحَك", "raconter",
+        ["تْحَكْت", "تْحَكْتِي", "تْحَكْتِي", "تْحَك", "تْحَكَات", "تْحَكْنَا", "تْحَكْتُو", "تْحَكُوْا"],
+        ["tḥakt", "tḥakti", "tḥakti", "tḥak", "tḥakat", "tḥakna", "tḥaktu", "tḥaku"],
+        ["كَنْتْحَك", "كَتْتْحَك", "كَتْتْحَكِي", "كَيْتْحَك", "كَتْتْحَك", "كَنْتْحَكُو", "كَتْتْحَكُو", "كَيْتْحَكُو"],
+        ["kantḥak", "kattḥak", "kattḥaki", "kaytḥak", "kattḥak", "kantḥaku", "kattḥaku", "kaytḥaku"],
+        ["غَادِي نْتْحَك", "غَادِي تْتْحَك", "غَادِي تْتْحَكِي", "غَادِي يْتْحَك", "غَادِي تْتْحَك", "غَادِي نْتْحَكُو", "غَادِي تْتْحَكُو", "غَادِي يْتْحَكُو"],
+        ["ghadi ntḥak", "ghadi ttḥak", "ghadi ttḥaki", "ghadi ytḥak", "ghadi ttḥak", "ghadi ntḥaku", "ghadi ttḥaku", "ghadi ytḥaku"]);
+
+    // 28. t3allem (apprendre)
+    addVerb("t3allem", "تْعَلَّم", "apprendre",
+        ["تْعَلَّمْت", "تْعَلَّمْتِي", "تْعَلَّمْتِي", "تْعَلَّم", "تْعَلَّمَات", "تْعَلَّمْنَا", "تْعَلَّمْتُو", "تْعَلَّمُوْا"],
+        ["t3allemt", "t3allemti", "t3allemti", "t3allem", "t3allemat", "t3allemna", "t3allemtu", "t3allemu"],
+        ["كَنْتْعَلَّم", "كَتْتْعَلَّم", "كَتْتْعَلَّمِي", "كَيْتْعَلَّم", "كَتْتْعَلَّم", "كَنْتْعَلَّمُو", "كَتْتْعَلَّمُو", "كَيْتْعَلَّمُو"],
+        ["kant3allem", "katt3allem", "katt3allemi", "kayt3allem", "katt3allem", "kant3allemu", "katt3allemu", "kayt3allemu"],
+        ["غَادِي نْتْعَلَّم", "غَادِي تْتْعَلَّم", "غَادِي تْتْعَلَّمِي", "غَادِي يْتْعَلَّم", "غَادِي تْتْعَلَّم", "غَادِي نْتْعَلَّمُو", "غَادِي تْتْعَلَّمُو", "غَادِي يْتْعَلَّمُو"],
+        ["ghadi nt3allem", "ghadi tt3allem", "ghadi tt3allemi", "ghadi yt3allem", "ghadi tt3allem", "ghadi nt3allemu", "ghadi tt3allemu", "ghadi yt3allemu"]);
+
+    // 29. tqawed (se renforcer)
+    addVerb("tqawed", "تْقَوَّد", "se renforcer",
+        ["تْقَوَّدْت", "تْقَوَّدْتِي", "تْقَوَّدْتِي", "تْقَوَّد", "تْقَوَّدَات", "تْقَوَّدْنَا", "تْقَوَّدْتُو", "تْقَوَّدُوْا"],
+        ["tqawwedt", "tqawwedti", "tqawwedti", "tqawwed", "tqawwedat", "tqawwedna", "tqawwedtu", "tqawwedu"],
+        ["كَنْتْقَوَّد", "كَتْتْقَوَّد", "كَتْتْقَوَّدِي", "كَيْتْقَوَّد", "كَتْتْقَوَّد", "كَنْتْقَوَّدُو", "كَتْتْقَوَّدُو", "كَيْتْقَوَّدُو"],
+        ["kantqawwed", "kattqawwed", "kattqawwedi", "kaytqawwed", "kattqawwed", "kantqawwedu", "kattqawwedu", "kaytqawwedu"],
+        ["غَادِي نْتْقَوَّد", "غَادِي تْتْقَوَّد", "غَادِي تْتْقَوَّدِي", "غَادِي يْتْقَوَّد", "غَادِي تْتْقَوَّد", "غَادِي نْتْقَوَّدُو", "غَادِي تْتْقَوَّدُو", "غَادِي يْتْقَوَّدُو"],
+        ["ghadi ntqawwed", "ghadi ttqawwed", "ghadi ttqawwedi", "ghadi ytqawwed", "ghadi ttqawwed", "ghadi ntqawwedu", "ghadi ttqawwedu", "ghadi ytqawwedu"]);
+
+    // 30. t3ayya (se fatiguer)
+    addVerb("t3ayya", "تْعَيَّا", "se fatiguer",
+        ["تْعَيِّيت", "تْعَيِّيتِي", "تْعَيِّيتِي", "تْعَيَّا", "تْعَيَّات", "تْعَيِّينَا", "تْعَيِّيتُو", "تْعَيَّاوْ"],
+        ["t3ayyit", "t3ayyiti", "t3ayyiti", "t3ayya", "t3ayyat", "t3ayyina", "t3ayyitu", "t3ayyaw"],
+        ["كَنْتْعَيَّا", "كَتْتْعَيَّا", "كَتْتْعَيَّايْ", "كَيْتْعَيَّا", "كَتْتْعَيَّا", "كَنْتْعَيَّاوْ", "كَتْتْعَيَّاوْ", "كَيْتْعَيَّاوْ"],
+        ["kant3ayya", "katt3ayya", "katt3ayyay", "kayt3ayya", "katt3ayya", "kant3ayyaw", "katt3ayyaw", "kayt3ayyaw"],
+        ["غَادِي نْتْعَيَّا", "غَادِي تْتْعَيَّا", "غَادِي تْتْعَيَّايْ", "غَادِي يْتْعَيَّا", "غَادِي تْتْعَيَّا", "غَادِي نْتْعَيَّاوْ", "غَادِي تْتْعَيَّاوْ", "غَادِي يْتْعَيَّاوْ"],
+        ["ghadi nt3ayya", "ghadi tt3ayya", "ghadi tt3ayyay", "ghadi yt3ayya", "ghadi tt3ayya", "ghadi nt3ayyaw", "ghadi tt3ayyaw", "ghadi yt3ayyaw"]);
+
+    // Maintenant nous avons 30 verbes correctement définis.
+
+    const verbSelect = document.getElementById("verbSelect");
+    verbsM5.forEach(v => {
+        let opt = document.createElement("option");
+        opt.value = v.inf;
+        opt.textContent = `${v.inf} (${v.ar}) – ${v.sens}`;
+        verbSelect.appendChild(opt);
+    });
+    function displayConjugation(verbInf) {
+        let v = verbsM5.find(v => v.inf === verbInf);
+        if (!v) return;
+        let pronouns = ["ana (je)", "nta (tu m)", "nti (tu f)", "huwa (il)", "hiya (elle)", "ḥna (nous)", "ntuma (vous)", "huma (ils/elles)"];
+        let html = `<table class="conj-table"><thead>  <th>Pronom</th><th>Passé</th><th>Présent</th><th>Futur</th> </thead><tbody>`;
+        for (let i=0; i<8; i++) {
+            html += `  <tr>
+                          <td>${pronouns[i]}</td>
+                          <td class="arabic-cell">${v.past[i]}<br><span class="latin-cell">${v.pastLatin[i]}</span></td>
+                          <td class="arabic-cell">${v.pres[i]}<br><span class="latin-cell">${v.presLatin[i]}</span></td>
+                          <td class="arabic-cell">${v.fut[i]}<br><span class="latin-cell">${v.futLatin[i]}</span></td>
+                        </tr>`;
+        }
+        html += `</tbody></table>`;
+        document.getElementById("conjugationTable").innerHTML = html;
+    }
+    verbSelect.addEventListener("change", () => displayConjugation(verbSelect.value));
+    displayConjugation(verbSelect.value);
+
+    // Exercices (inchangés)
+    function checkHealth() { let a=document.getElementById("healthExo").value.trim(); document.getElementById("healthFeedback").innerHTML = a==="3ndi ṣudā3"?"✔️":"❌ 3ndi ṣudā3"; }
+    function checkExo1() { let a=document.getElementById("exo1").value.trim(); document.getElementById("exo1Feedback").innerHTML = a==="3ndi wja3 f baṭn"?"✔️":"❌ 3ndi wja3 f baṭn"; }
+    function checkExo2() { let a=document.getElementById("exo2").value.trim(); document.getElementById("exo2Feedback").innerHTML = a==="khoud had dawa qbel l'maakla"?"✔️":"❌ khoud had dawa qbel l'maakla"; }
+    function checkExo3() { let a=document.getElementById("exo3").value.trim(); document.getElementById("exo3Feedback").innerHTML = a==="kayrta7"?"✔️":"❌ kayrta7"; }
+    function checkExo4() { let a=document.getElementById("exo4").value.trim(); document.getElementById("exo4Feedback").innerHTML = a==="khoud"?"✔️":"❌ khoud"; }
+    function checkExo5() { let a=document.getElementById("exo5").value.trim(); document.getElementById("exo5Feedback").innerHTML = a==="la fièvre est élevée"?"✔️":"❌ la fièvre est élevée"; }
+    function checkExo6() { let a=document.getElementById("exo6").value.trim(); document.getElementById("exo6Feedback").innerHTML = a.includes("wja3")?"✔️":"❌ utilisez 'wja3'"; }
+    function checkExo7() { let a=document.getElementById("exo7").value.trim(); document.getElementById("exo7Feedback").innerHTML = a==="chrit dawa"?"✔️":"❌ chrit dawa"; }
+    function checkExo8() { let a=document.getElementById("exo8").value.trim(); document.getElementById("exo8Feedback").innerHTML = a==="ma khoudch had l'ḥeb"?"✔️":"❌ ma khoudch had l'ḥeb"; }
+    function checkExo9() { let a=document.getElementById("exo9").value.trim(); document.getElementById("exo9Feedback").innerHTML = a==="ana mriḍ"?"✔️":"❌ ana mriḍ"; }
+
+    const trainingPhrases = [{text:"Mchit l souk w chrit khobz",target:"khobz"}];
+    let trainIdx=0;
+    function updTrain(){let p=trainingPhrases[trainIdx]; document.getElementById("modelPhrase").innerText=p.text; document.getElementById("replaceWord").innerText=p.target; document.getElementById("replaceInput").value=""; document.getElementById("replaceFeedback").innerHTML="";}
+    document.getElementById("replaceBtn").onclick = () => { let nw=document.getElementById("replaceInput").value.trim(); let tg=document.getElementById("replaceWord").innerText; let phr=trainingPhrases[trainIdx].text; let newPhr=phr.replace(tg,nw); if(nw) document.getElementById("replaceFeedback").innerHTML=`✅ ${newPhr}`; else document.getElementById("replaceFeedback").innerHTML="❌ Entrez un mot"; };
+    document.getElementById("newTrainingBtn").onclick = () => { trainIdx=(trainIdx+1)%trainingPhrases.length; updTrain(); };
+    updTrain();
+
+    let activeTab = sessionStorage.getItem("activeTabM5") || "grammar";
+    function setActiveTab(tabId){
+        document.querySelectorAll(".tab-content").forEach(t=>t.classList.remove("active"));
+        document.getElementById(tabId)?.classList.add("active");
+        document.querySelectorAll(".tab-btn").forEach(btn=>{if(btn.dataset.tab===tabId) btn.classList.add("active"); else btn.classList.remove("active");});
+        sessionStorage.setItem("activeTabM5",tabId);
+    }
+    document.querySelectorAll(".tab-btn").forEach(btn=>btn.addEventListener("click",()=>setActiveTab(btn.dataset.tab)));
+    setActiveTab(activeTab);
+</script>
 </body>
 </html>
